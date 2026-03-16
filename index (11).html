@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Alma Admin</title>
+<meta name="theme-color" content="#08080a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Alma"/>
+<link rel="manifest" href="manifest-admin.json"/>
+<link rel="apple-touch-icon" href="data:image/png;base64,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"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#08080a;--s1:#0f0f12;--s2:#141418;--s3:#1a1a1f;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.03);
+  --cyan:#00d4ff;--green:#00ff88;--yellow:#ffb400;--red:#ff4d4d;--purple:#a855f7;
+  --text:#f0f0f2;--muted:#606070;--muted2:#3a3a48;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
+
+/* ── LAYOUT ── */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  background: var(--bg);
+}
+
+/* Desktop : sidebar visible */
+@media (min-width: 769px) {
+  .app { max-width: 100%; flex-direction: row; }
+  .topbar-mobile { display: none !important; }
+  .bottom-nav { display: none !important; }
+  .sidebar-desktop { display: flex !important; }
+  .content-area { padding-top: 0; padding-bottom: 0; }
+}
+
+/* ── TOPBAR MOBILE ── */
+.topbar-mobile {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: calc(var(--safe-top) + 56px);
+  padding-top: var(--safe-top);
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.topbar-inner {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar-logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--cyan);
+  letter-spacing: -.5px;
+}
+.topbar-logo span { color: var(--text); opacity: .3; }
+.topbar-badge-area { display: flex; align-items: center; gap: 8px; }
+.topbar-notif {
+  width: 36px; height: 36px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; position: relative;
+}
+.notif-dot {
+  width: 8px; height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  position: absolute; top: 6px; right: 6px;
+  display: none;
+}
+.topbar-av {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), #0077aa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: #000;
+}
+
+/* ── CONTENT AREA ── */
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: calc(var(--safe-top) + 56px);
+  padding-bottom: calc(var(--safe-bot) + 64px);
+}
+
+/* ── PAGES ── */
+.page { display: none; padding: 20px; }
+.page.active { display: block; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.5px;
+}
+.page-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── STATS CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+.stat-card.full { grid-column: 1 / -1; }
+.stat-n {
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'DM Mono', monospace;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-l {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+/* ── SECTION CARD ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.card-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── LISTE CLIENTS MOBILE ── */
+.client-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border2);
+  cursor: pointer;
+  transition: background .15s;
+}
+.client-item:last-child { border: none; }
+.client-item:active { background: var(--s2); }
+.client-av {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--cyan), #0077aa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: #000;
+  flex-shrink: 0;
+}
+.client-info { flex: 1; min-width: 0; }
+.client-name {
+  font-size: 14px; font-weight: 700;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.client-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.client-right { text-align: right; flex-shrink: 0; }
+.client-status {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 99px;
+  margin-bottom: 4px;
+}
+.status-actif { background: rgba(0,255,136,.1); color: var(--green); }
+.status-expire { background: rgba(255,77,77,.1); color: var(--red); }
+.status-essai { background: rgba(255,180,0,.1); color: var(--yellow); }
+.client-amount {
+  font-size: 12px; font-weight: 700;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── ALERTE ITEM ── */
+.alerte-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border2);
+}
+.alerte-item:last-child { border: none; }
+.alerte-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.alerte-info { flex: 1; }
+.alerte-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.alerte-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.alerte-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 99px;
+  flex-shrink: 0;
+}
+
+/* ── BOUTONS ── */
+.btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; border: none;
+  font-family: inherit; transition: all .15s;
+}
+.btn-cyan { background: var(--cyan); color: #000; }
+.btn-cyan:active { opacity: .8; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-red { background: rgba(255,77,77,.12); color: var(--red); border: 1px solid rgba(255,77,77,.2); }
+.btn-sm { padding: 7px 12px; font-size: 11px; border-radius: 8px; }
+.btn-full { width: 100%; text-align: center; padding: 14px; font-size: 14px; }
+
+/* ── FAB (bouton action flottant) ── */
+.fab {
+  position: fixed;
+  bottom: calc(var(--safe-bot) + 76px);
+  right: 20px;
+  width: 52px; height: 52px;
+  background: var(--cyan);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,212,255,.3);
+  border: none; z-index: 150;
+  transition: transform .15s;
+}
+.fab:active { transform: scale(.92); }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  padding-bottom: var(--safe-bot);
+}
+.bottom-nav-inner {
+  display: flex;
+  height: 60px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.bn {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer;
+  color: var(--muted); border: none;
+  background: transparent; font-family: inherit;
+  font-size: 10px; font-weight: 600;
+  transition: color .15s; position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.bn.active { color: var(--cyan); }
+.bn-icon { font-size: 22px; line-height: 1; }
+.bn-badge {
+  position: absolute; top: 8px;
+  right: calc(50% - 20px);
+  min-width: 16px; height: 16px;
+  background: var(--red); color: #fff;
+  border-radius: 99px; font-size: 9px;
+  font-weight: 800; display: none;
+  align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+.search-bar input {
+  flex: 1; background: transparent; border: none;
+  color: var(--text); font-size: 14px;
+  font-family: inherit; outline: none;
+}
+.search-bar input::placeholder { color: var(--muted); }
+
+/* ── MODAL PLEIN ECRAN MOBILE ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.7); z-index: 900;
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-sheet {
+  background: var(--s1);
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 480px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: 0 0 calc(var(--safe-bot) + 20px);
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 99px;
+  margin: 12px auto 4px;
+}
+.modal-header {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+}
+.modal-title { font-size: 16px; font-weight: 800; }
+.modal-close {
+  width: 30px; height: 30px;
+  background: var(--s2); border: none;
+  border-radius: 50%; color: var(--muted);
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 20px; }
+
+/* ── INPUT ── */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block; font-size: 11px;
+  font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text); font-size: 15px;
+  font-family: inherit; outline: none;
+  transition: border-color .15s;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--cyan);
+}
+.field select { background: var(--s2); }
+
+/* ── DESKTOP SIDEBAR ── */
+.sidebar-desktop {
+  display: none;
+  width: 52px;
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  gap: 2px;
+  flex-shrink: 0;
+  transition: width .25s;
+  overflow: hidden;
+}
+.sidebar-desktop:hover { width: 190px; }
+.sd-logo {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg,var(--cyan),#0077aa);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px; color: #000;
+  flex-shrink: 0; margin-bottom: 14px;
+}
+.sd-nav {
+  width: 100%; display: flex; align-items: center;
+  gap: 10px; padding: 9px; border-radius: 8px;
+  cursor: pointer; color: var(--muted);
+  transition: all .15s; white-space: nowrap;
+  overflow: hidden; border: none; background: transparent;
+  font-family: inherit;
+}
+.sd-nav:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.sd-nav.active { color: var(--cyan); background: rgba(0,212,255,.08); }
+.sd-icon { font-size: 17px; flex-shrink: 0; width: 34px; text-align: center; }
+.sd-text { font-size: 12px; font-weight: 500; opacity: 0; transition: opacity .2s; }
+.sidebar-desktop:hover .sd-text { opacity: 1; }
+.sd-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 99px; display: none; }
+.sidebar-desktop:hover .sd-badge { display: block; }
+.sd-bottom { margin-top: auto; }
+.sd-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity .2s; padding: 0 14px; margin: 8px 0 4px; width: 100%; }
+.sidebar-desktop:hover .sd-label { opacity: 1; }
+
+/* ── REVENUS ── */
+.rev-big {
+  text-align: center;
+  padding: 28px 20px;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  margin-bottom: 14px;
+}
+.rev-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.rev-value { font-size: 42px; font-weight: 800; font-family: 'DM Mono', monospace; color: var(--cyan); }
+.rev-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* ── TICKET ITEM ── */
+.ticket-item {
+  display: flex; align-items: flex-start;
+  gap: 12px; padding: 14px 16px;
+  border-bottom: 1px solid var(--border2);
+  cursor: pointer; transition: background .15s;
+}
+.ticket-item:last-child { border: none; }
+.ticket-item:active { background: var(--s2); }
+.ticket-prio {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 5px;
+}
+.ticket-info { flex: 1; }
+.ticket-subject { font-size: 13px; font-weight: 600; color: var(--text); }
+.ticket-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.ticket-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; flex-shrink: 0; }
+
+/* ── SEPARATEUR ── */
+.sep { height: 1px; background: var(--border); margin: 4px 0; }
+.sec-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; padding: 10px 16px 4px; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 48px 20px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-text { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 12px; }
+
+/* ── PWA TOAST ── */
+.pwa-toast {
+  display: none; position: fixed;
+  bottom: calc(var(--safe-bot) + 72px);
+  left: 12px; right: 12px;
+  background: var(--s2);
+  border: 1px solid var(--cyan);
+  border-radius: 16px; padding: 14px 16px;
+  z-index: 500; align-items: center; gap: 12px;
+  box-shadow: 0 0 40px rgba(0,212,255,.15);
+  animation: slideUp .3s ease;
+}
+.pwa-toast-btn { padding: 9px 16px; background: var(--cyan); color: #000; border: none; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer; font-family: inherit; white-space: nowrap; }
+.pwa-close-btn { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0; line-height: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0; }
+
+/* ── OVERLAYS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.overlay.show{display:flex;}
+.modal{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:520px;max-height:90dvh;overflow-y:auto;}
+.modal-lg{max-width:700px;}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.mhead h3{font-size:16px;font-weight:700;}
+.frow{display:flex;gap:12px;margin-bottom:12px;}
+.fg{flex:1;display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.fg input,.fg select,.fg textarea{background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;}
+.fg input:focus,.fg select:focus{border-color:var(--cyan);}
+.overlay{cursor:pointer;}
+.overlay .modal{cursor:default;}
+@media(max-width:480px){.frow{flex-direction:column;}.modal{padding:16px;}}
+
+</style>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Alma"/>
+<meta name="theme-color" content="#08080a"/>
+<link rel="manifest" href="manifest-admin.json"/>
+</head>
+<body>
+
+<!-- ─────────────── DESKTOP SIDEBAR ─────────────── -->
+<div class="sidebar-desktop">
+  <div class="sd-logo">A</div>
+  <div class="sd-label">Principal</div>
+  <button class="sd-nav active" onclick="goPage('clients',this)"><span class="sd-icon">👥</span><span class="sd-text">Mes clients</span></button>
+  <button class="sd-nav" onclick="goPage('alertes',this)"><span class="sd-icon">🔔</span><span class="sd-text">Alertes</span><span class="sd-badge" id="badgeAlertes"></span></button>
+  <button class="sd-nav" onclick="goPage('tickets',this)"><span class="sd-icon">🎫</span><span class="sd-text">Support</span><span class="sd-badge" id="badgeTickets"></span></button>
+  <div class="sd-label">Finance</div>
+  <button class="sd-nav" onclick="goPage('revenus',this)"><span class="sd-icon">💰</span><span class="sd-text">Revenus</span></button>
+  <button class="sd-nav" onclick="goPage('contrats',this)"><span class="sd-icon">📄</span><span class="sd-text">Contrats</span></button>
+  <button class="sd-nav" onclick="goPage('abonnements',this)"><span class="sd-icon">📋</span><span class="sd-text">Abonnements</span></button>
+  <div class="sd-bottom">
+    <div class="sd-label">Compte</div>
+    <button class="sd-nav" onclick="logout()"><span class="sd-icon">🚪</span><span class="sd-text">Déconnexion</span></button>
+  </div>
+</div>
+
+<!-- ─────────────── APP CONTAINER ─────────────── -->
+<div class="app">
+
+  <!-- TOPBAR MOBILE -->
+  <div class="topbar-mobile">
+    <div class="topbar-inner">
+      <div class="topbar-logo">alma<span>.</span></div>
+      <div class="topbar-badge-area">
+        <div class="topbar-notif" onclick="goPageMob('alertes')">
+          🔔<div class="notif-dot" id="notifDot"></div>
+        </div>
+        <div class="topbar-av" id="topbar-av">L</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU SCROLLABLE -->
+  <div class="content-area" id="content-area">
+
+    <!-- ── PAGE CLIENTS ── -->
+    <div class="page active" id="page-clients">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Clients</div>
+          <div class="page-subtitle" id="sub-clients">Chargement…</div>
+        </div>
+        <button class="btn btn-cyan btn-sm" onclick="openNewClient()">+ Nouveau</button>
+      </div>
+      <!-- Stats -->
+      <div class="stats-grid" id="statsClients" style="display:none">
+        <div class="stat-card"><div class="stat-n" id="sTotal" style="color:var(--cyan)">0</div><div class="stat-l">Total</div></div>
+        <div class="stat-card"><div class="stat-n" id="sActifs" style="color:var(--green)">0</div><div class="stat-l">Actifs</div></div>
+        <div class="stat-card"><div class="stat-n" id="sExp" style="color:var(--red)">0</div><div class="stat-l">Expirés</div></div>
+        <div class="stat-card"><div class="stat-n" id="sMrr" style="color:var(--yellow)">0€</div><div class="stat-l">MRR</div></div>
+      </div>
+      <!-- Search -->
+      <div class="search-bar">
+        <span style="font-size:16px">🔍</span>
+        <input type="text" id="searchInput" placeholder="Rechercher un client…" oninput="filterC(this.value)"/>
+      </div>
+      <!-- Liste -->
+      <div class="card" id="clientsListMob" style="overflow:hidden"></div>
+    </div>
+
+    <!-- ── PAGE ALERTES ── -->
+    <div class="page" id="page-alertes">
+      <div class="page-header">
+        <div><div class="page-title">Alertes</div><div class="page-subtitle">Paiements à surveiller</div></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n" id="aExp" style="color:var(--red)">0</div><div class="stat-l">Expirés</div></div>
+        <div class="stat-card"><div class="stat-n" id="aSoon" style="color:var(--yellow)">0</div><div class="stat-l">Bientôt</div></div>
+        <div class="stat-card full"><div class="stat-n" id="aOk" style="color:var(--green)">0</div><div class="stat-l">OK</div></div>
+      </div>
+      <div class="card" id="alertesListMob"></div>
+    </div>
+
+    <!-- ── PAGE TICKETS ── -->
+    <div class="page" id="page-tickets">
+      <div class="page-header">
+        <div><div class="page-title">Support</div><div class="page-subtitle">Tickets clients</div></div>
+        <button class="btn btn-outline btn-sm" onclick="createTicket()">+ Ticket</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n" id="tOpen" style="color:var(--red)">0</div><div class="stat-l">Ouverts</div></div>
+        <div class="stat-card"><div class="stat-n" id="tProg" style="color:var(--yellow)">0</div><div class="stat-l">En cours</div></div>
+        <div class="stat-card full"><div class="stat-n" id="tDone" style="color:var(--green)">0</div><div class="stat-l">Résolus</div></div>
+      </div>
+      <div class="card" id="ticketsListMob"></div>
+    </div>
+
+    <!-- ── PAGE REVENUS ── -->
+    <div class="page" id="page-revenus">
+      <div class="page-header"><div class="page-title">Revenus</div></div>
+      <div class="rev-big">
+        <div class="rev-label">MRR — Revenu mensuel récurrent</div>
+        <div class="rev-value" id="rMrr">0€</div>
+        <div class="rev-sub">Mis à jour automatiquement</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n" id="rArr" style="color:var(--green)">0€</div><div class="stat-l">ARR</div></div>
+        <div class="stat-card"><div class="stat-n" id="rAvg" style="color:var(--cyan)">0€</div><div class="stat-l">Panier moyen</div></div>
+        <div class="stat-card"><div class="stat-n" id="rStarter" style="color:var(--muted)">0</div><div class="stat-l">Starter</div></div>
+        <div class="stat-card"><div class="stat-n" id="rPro" style="color:var(--cyan)">0</div><div class="stat-l">Pro</div></div>
+        <div class="stat-card"><div class="stat-n" id="rPremium" style="color:var(--purple)">0</div><div class="stat-l">Premium</div></div>
+        <div class="stat-card"><div class="stat-n" id="rLifetime" style="color:var(--yellow)">0</div><div class="stat-l">Lifetime</div></div>
+      </div>
+    </div>
+
+    <!-- ── PAGE CONTRATS ── -->
+    <div class="page" id="page-contrats">
+      <div class="page-header">
+        <div><div class="page-title">Contrats</div><div class="page-subtitle">Devis & documents</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="newDoc('devis')">📄</button>
+          <button class="btn btn-cyan btn-sm" onclick="newDoc('contrat')">📝 Contrat</button>
+        </div>
+      </div>
+      <div id="docsList"></div>
+    </div>
+
+    <!-- ── PAGE ABONNEMENTS ── -->
+    <div class="page" id="page-abonnements">
+      <div class="page-header"><div class="page-title">Abonnements</div></div>
+      <div class="card" style="overflow:auto">
+        <table style="width:100%;min-width:480px;border-collapse:collapse">
+          <thead><tr style="border-bottom:1px solid var(--border)">
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Client</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Type</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Montant</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Prochain</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Statut</th>
+          </tr></thead>
+          <tbody id="aboTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <!-- BOTTOM NAV MOBILE -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="bn active" id="bn-clients" onclick="goPageMob('clients',this)">
+        <span class="bn-icon">👥</span>Clients
+      </button>
+      <button class="bn" id="bn-alertes" onclick="goPageMob('alertes',this)">
+        <span class="bn-icon">🔔</span>Alertes
+        <span class="bn-badge" id="mob-badge-alertes"></span>
+      </button>
+      <button class="bn" id="bn-tickets" onclick="goPageMob('tickets',this)">
+        <span class="bn-icon">🎫</span>Support
+        <span class="bn-badge" id="mob-badge-tickets"></span>
+      </button>
+      <button class="bn" id="bn-revenus" onclick="goPageMob('revenus',this)">
+        <span class="bn-icon">💰</span>Revenus
+      </button>
+      <button class="bn" id="bn-more" onclick="toggleMore()">
+        <span class="bn-icon">⋯</span>Plus
+      </button>
+    </div>
+  </nav>
+
+  <!-- FAB -->
+  <button class="fab" id="fab-btn" onclick="fabAction()" title="Nouveau client">+</button>
+
+</div><!-- /app -->
+
+<!-- ── MORE MENU ── -->
+<div class="modal-overlay" id="more-modal" onclick="toggleMore()">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="border-radius:20px 20px 0 0">
+    <div class="modal-handle"></div>
+    <div style="padding:16px 20px 20px">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Navigation</div>
+      <button onclick="goPageMob('contrats');toggleMore()" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px"><span style="font-size:20px">📄</span>Contrats & Devis</button>
+      <button onclick="goPageMob('abonnements');toggleMore()" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px"><span style="font-size:20px">📋</span>Abonnements</button>
+      <button onclick="logout();toggleMore()" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,77,77,.06);border:1px solid rgba(255,77,77,.15);border-radius:12px;color:var(--red);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer"><span style="font-size:20px">🚪</span>Déconnexion</button>
+    </div>
+  </div>
+</div>
+
+<!-- PWA TOAST -->
+<div class="pwa-toast" id="pwa-toast">
+  <span style="font-size:26px">📲</span>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700;color:var(--text)">Installer Alma Admin</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px">Accès direct depuis votre écran d'accueil</div>
+  </div>
+  <button class="pwa-toast-btn" onclick="installPWA()">Installer</button>
+  <button class="pwa-close-btn" onclick="document.getElementById('pwa-toast').style.display='none'">×</button>
+</div>
+
+<!-- MODAL NOUVEAU CLIENT -->
+<div class="overlay" id="mNewClient" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhead"><h3>Nouveau client</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="frow"><div class="fg"><label>Nom</label><input id="nc-name" type="text" placeholder="Jean Dupont"></div><div class="fg"><label>Activité</label><input id="nc-act" type="text" placeholder="Food truck..."></div></div>
+    <div class="frow"><div class="fg"><label>Email</label><input id="nc-email" type="email" placeholder="email@..."></div><div class="fg"><label>Téléphone</label><input id="nc-phone" type="text" placeholder="06..."></div></div>
+    <div class="frow">
+      <div class="fg"><label>Abonnement</label><select id="nc-type"><option value="starter">Starter — 29€/mois</option><option value="starter_annual">Starter Annuel — 290€/an</option><option value="monthly">Pro — 49€/mois</option><option value="pro_annual">Pro Annuel — 490€/an</option><option value="premium">Premium — 79€/mois</option><option value="premium_annual">Premium Annuel — 790€/an</option></select></div>
+      <div class="fg"><label>Prochain paiement</label><input id="nc-next" type="date"></div>
+    </div>
+    <div class="fg"><label>Clé générée</label><input id="nc-key" type="text" readonly style="font-family:'DM Mono',monospace;color:var(--cyan);font-size:12px;letter-spacing:1px"></div>
+    <div id="nc-err" style="color:var(--red);font-size:12px;display:none;margin-top:6px"></div>
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-cyan" id="nc-sub" onclick="createClient()">Créer</button></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT CLIENT -->
+<div class="overlay" id="mEditClient" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhead"><h3>Modifier le client</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="frow"><div class="fg"><label>Nom</label><input id="ec-name" type="text"></div><div class="fg"><label>Activité</label><input id="ec-act" type="text"></div></div>
+    <div class="frow"><div class="fg"><label>Email</label><input id="ec-email" type="email"></div><div class="fg"><label>Téléphone</label><input id="ec-phone" type="text"></div></div>
+    <div class="frow">
+      <div class="fg"><label>Abonnement</label><select id="ec-type"><option value="monthly">Mensuel</option><option value="annual">Annuel</option><option value="lifetime">Lifetime</option></select></div>
+      <div class="fg"><label>Prochain paiement</label><input id="ec-next" type="date"></div>
+    </div>
+    <input type="hidden" id="ec-id">
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-cyan" onclick="saveEdit()">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- MODAL CLIENT DETAIL -->
+<div class="overlay" id="mClientDetail" onclick="if(event.target===this)closeModal()">
+  <div class="modal modal-lg">
+    <div class="mhead"><h3 id="cdTitle">Client</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕ Fermer</button></div>
+    <div id="cdBody"></div>
+  </div>
+</div>
+
+<!-- MODAL NOUVEAU TICKET -->
+<div class="overlay" id="mNewTicket" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhead"><h3>Nouveau ticket</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Client</label><select id="tk-client"><option value="">Sélectionner...</option></select></div>
+    <div class="fg"><label>Titre</label><input id="tk-title" type="text" placeholder="Ex: Bug page stock"></div>
+    <div class="fg"><label>Description</label><textarea id="tk-desc" rows="3"></textarea></div>
+    <div class="fg"><label>Priorité</label><select id="tk-prio"><option value="low">🟢 Faible</option><option value="medium" selected>🟡 Moyenne</option><option value="high">🔴 Haute</option></select></div>
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-cyan" onclick="createTicket()">Créer</button></div>
+  </div>
+</div>
+
+<!-- MODAL TICKET DETAIL -->
+<div class="overlay" id="mTicketDetail" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhead"><h3 id="mtTitle"></h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="msub" id="mtInfo"></div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6" id="mtDesc"></div>
+    <div class="fg"><label>Réponse</label><textarea id="mt-reply" rows="3"></textarea></div>
+    <div class="fg"><label>Statut</label><select id="mt-status"><option value="open">🔴 Ouvert</option><option value="in_progress">🟡 En cours</option><option value="resolved">🟢 Résolu</option></select></div>
+    <input type="hidden" id="mt-id">
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Fermer</button><button class="btn btn-cyan" onclick="updateTicket()">Mettre à jour</button></div>
+  </div>
+</div>
+
+<!-- MODAL APERCU DOC -->
+<div class="overlay" id="mPreview" onclick="if(event.target===this)closeModal()">
+  <div class="modal modal-lg">
+    <div class="mhead"><h3 id="prevTitle">Aperçu</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-green btn-sm" onclick="openSig()">✍️ Signer</button>
+        <button class="btn btn-outline btn-sm" onclick="printDoc()">🖨️ Imprimer</button>
+        <button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="docpreview" id="prevContent"></div>
+  </div>
+</div>
+
+<!-- MODAL SIGNATURE -->
+<div class="overlay" id="mSign" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhead"><h3>✍️ Signature électronique</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="msub">Signez dans le cadre ci-dessous.</div>
+    <canvas id="sigCanvas" width="460" height="150"></canvas>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;-webkit-app-region:no-drag">
+      <button class="btn btn-outline" onclick="clearSig()">Effacer</button>
+      <button class="btn btn-cyan" onclick="applySig()">Appliquer</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+const SB_URL = 'https://mpiugnnxpgzlfnltsqxe.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1waXVnbm54cGd6bGZubHRzcXhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzM2MjYsImV4cCI6MjA4ODg0OTYyNn0.F-UhZFNQGO2tBboq7Ne5czo-EQ3nHlo7cHFQLOmQeQ0'
+const COLORS = ['#00d4ff','#00ff88','#ffb400','#a855f7','#ff6b6b','#06b6d4']
+const PRICES = {starter:29, monthly:49, pro:49, annual:79, premium:79, starter_annual:290, pro_annual:490, premium_annual:790}
+
+let clients = []
+let tickets = []
+let docs = []
+let curDoc = null
+
+async function api(method, path, body) {
+  const r = await fetch(SB_URL + path, {
+    method,
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY,'Prefer':method==='POST'?'return=representation':''},
+    body: body ? JSON.stringify(body) : undefined
+  })
+  const t = await r.text()
+  return t ? JSON.parse(t) : []
+}
+
+async function init() {
+  try {
+    const data = await api('GET', '/rest/v1/clients?select=*&order=created_at.desc')
+    clients = Array.isArray(data) ? data.filter(c => !c.is_admin) : []
+  } catch(e) { clients = [] }
+
+  // Tickets et docs depuis store Electron
+  try { const v = await localStorage.getItem('alma_tickets'); tickets = v ? JSON.parse(v) : [] } catch(e) { tickets = [] }
+  try { const v = await localStorage.getItem('alma_docs'); docs = v ? JSON.parse(v) : [] } catch(e) { docs = [] }
+
+  renderAll()
+}
+
+function renderAll() {
+  renderClients()
+  renderAlertes()
+  renderTickets()
+  renderRevenus()
+  renderDocs()
+  renderAbonnements()
+  fillSelects()
+  updateBadges()
+}
+
+// ── CLIENTS ───────────────────────────────────────────────
+function renderClients(f = '') {
+  const filtered = clients.filter(c => !f || (c.name||'').toLowerCase().includes(f.toLowerCase()) || (c.activity||'').toLowerCase().includes(f.toLowerCase()))
+  document.getElementById('cCount').textContent = '(' + filtered.length + ')'
+  const actifs = clients.filter(c => c.active).length
+  const mrr = Math.round(clients.filter(c => c.active).reduce((s,c) => s+(PRICES[c.license_type]||0), 0))
+  document.getElementById('sTotal').textContent = clients.length
+  document.getElementById('sActifs').textContent = actifs
+  document.getElementById('sMrr').textContent = mrr + '€'
+  document.getElementById('sSusp').textContent = clients.filter(c => !c.active).length
+  document.getElementById('statsClients').style.display = clients.length ? 'grid' : 'none'
+
+  if(!filtered.length) {
+    document.getElementById('cgrid').innerHTML = ''
+    document.getElementById('cempty').style.display = 'block'
+    return
+  }
+  document.getElementById('cempty').style.display = 'none'
+
+  document.getElementById('cgrid').innerHTML = filtered.map(c => {
+    const color = COLORS[clients.indexOf(c) % COLORS.length]
+    const init = (c.name||'?').slice(0,2).toUpperCase()
+    const tp = c.license_type==='lifetime' ? '<span class="pill p-purple">♾ Lifetime</span>' : c.license_type==='annual' ? '<span class="pill p-ok">📅 Annuel</span>' : '<span class="pill p-cyan">🔄 Mensuel</span>'
+    const sp = c.active ? '<span class="pill p-ok">● Actif</span>' : '<span class="pill p-red">● Suspendu</span>'
+    const days = alertDays(c)
+    const ap = days !== null && days < 0 ? '<span class="pill p-red">⚠️ Expiré</span>' : days !== null && days <= 7 ? '<span class="pill p-warn">⏰ '+days+'j</span>' : ''
+    const tkt = tickets.filter(t => t.cid === c.id && t.status !== 'resolved').length
+    return `<div class="ccard">
+      <div class="ctop">
+        <div class="cavatar" style="background:linear-gradient(135deg,${color},${color}88)">${init}</div>
+        <div><div class="cname">${c.name||'Sans nom'}</div><div class="cact">${c.activity||'—'}</div></div>
+        ${tkt ? '<span class="pill p-red" style="margin-left:auto">🎫 '+tkt+'</span>' : '<div style="margin-left:auto"></div>'}
+      </div>
+      <div class="cmid">${sp}${tp}${ap}</div>
+      <div class="cbot">
+        <button class="btn btn-cyan btn-sm" onclick="openClientDetail('${c.id}')">Ouvrir →</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-outline btn-sm" onclick="openEdit('${c.id}')">✏️</button>
+        <button class="btn ${c.active?'btn-red':'btn-green'} btn-sm" onclick="toggle('${c.id}',${c.active})">${c.active?'⏸':'▶'}</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function filterC() { renderClients(document.getElementById('search').value) }
+
+function alertDays(c) {
+  if(!c.next_payment || c.license_type === 'lifetime') return null
+  return Math.round((new Date(c.next_payment) - new Date()) / 86400000)
+}
+
+function openClientDetail(id) {
+  const c = clients.find(x => x.id === id)
+  if(!c) return
+  const color = COLORS[clients.indexOf(c) % COLORS.length]
+  const init = (c.name||'?').slice(0,2).toUpperCase()
+  const tp = c.license_type==='lifetime' ? '♾ Lifetime' : c.license_type==='annual' ? '📅 Annuel — 190€/an' : '🔄 Mensuel — 19€/mois'
+  const sp = c.active ? '<span class="pill p-ok">● Actif</span>' : '<span class="pill p-red">● Suspendu</span>'
+  const next = c.next_payment ? new Date(c.next_payment).toLocaleDateString('fr-FR') : '—'
+  const appBlock = c.app_file
+    ? `<div style="padding:20px;text-align:center"><div style="font-size:26px;margin-bottom:8px">✅</div><div style="font-weight:600;color:var(--green)">App configurée</div><div style="font-size:12px;color:var(--muted);margin-top:4px">${c.app_file}</div></div>`
+    : `<div style="padding:30px;text-align:center;color:var(--muted)"><div style="font-size:30px;margin-bottom:10px">🛠️</div><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Aucune application configurée</div><div style="font-size:12px">Cliquez sur Configurer pour associer un dashboard.</div></div>`
+  const openBtn = c.app_file
+    ? `<button class="btn btn-cyan btn-sm" onclick="console.log('app:', c.app_file)">Ouvrir l'app →</button>`
+    : ''
+
+  document.getElementById('cdTitle').textContent = c.name || 'Client'
+  document.getElementById('cdBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,${color},${color}88);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#000">${init}</div>
+      <div><div style="font-size:18px;font-weight:800">${c.name}</div><div style="font-size:12px;color:var(--muted)">${c.activity||'—'} · ${c.email||''}</div></div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="closeModal();openEdit('${c.id}')">✏️ Modifier</button>
+        <button class="btn ${c.active?'btn-red':'btn-green'} btn-sm" onclick="toggle('${c.id}',${c.active});closeModal()">${c.active?'⏸ Suspendre':'▶ Réactiver'}</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+      <div style="background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Clé de licence</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--cyan)">${c.license_key||'—'}</div>
+      </div>
+      <div style="background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Abonnement</div>
+        <div style="font-size:13px;font-weight:600">${tp} ${sp}</div>
+      </div>
+      <div style="background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Prochain paiement</div>
+        <div style="font-size:13px;font-weight:600">${next}</div>
+      </div>
+    </div>
+    <div style="background:var(--s3);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600">🖥️ Application client</div>
+        <div style="display:flex;gap:8px">${openBtn}<button class="btn btn-outline btn-sm" onclick="configApp('${c.id}')">⚙️ Configurer</button></div>
+      </div>
+      ${appBlock}
+    </div>
+  `
+  openModal('mClientDetail')
+}
+
+async function configApp(id) {
+  const f = prompt('Nom du fichier dashboard (ex: croquez-moi.html) :')
+  if(!f) return
+  await api('PATCH', '/rest/v1/clients?id=eq.'+id, {app_file: f})
+  await init()
+  closeModal()
+  setTimeout(() => openClientDetail(id), 200)
+}
+
+// ── ALERTES ───────────────────────────────────────────────
+function renderAlertes() {
+  const exp = clients.filter(c => { const d = alertDays(c); return d !== null && d < 0 })
+  const soon = clients.filter(c => { const d = alertDays(c); return d !== null && d >= 0 && d <= 7 })
+  const ok = clients.filter(c => { const d = alertDays(c); return d === null || d > 7 })
+  document.getElementById('aExp').textContent = exp.length
+  document.getElementById('aSoon').textContent = soon.length
+  document.getElementById('aOk').textContent = ok.length
+  const all = [...exp.map(c=>({c,t:'exp'})), ...soon.map(c=>({c,t:'soon'})), ...ok.slice(0,5).map(c=>({c,t:'ok'}))]
+  document.getElementById('alertesList').innerHTML = all.length ? all.map(({c,t}) => {
+    const d = alertDays(c)
+    const cls = t==='exp' ? 'a-exp' : t==='soon' ? 'a-soon' : 'a-ok'
+    const icon = t==='exp' ? '🚨' : t==='soon' ? '⏰' : '✅'
+    const msg = t==='exp' ? `Expiré depuis ${Math.abs(d)} jour(s)` : t==='soon' ? `Renouvellement dans ${d} jour(s)` : `À jour${c.license_type==='lifetime' ? ' — Lifetime' : c.next_payment ? ' — '+new Date(c.next_payment).toLocaleDateString('fr-FR') : ''}`
+    return `<div class="aitem ${cls}"><span style="font-size:22px">${icon}</span><div style="flex:1"><div style="font-size:13px;font-weight:600">${c.name}</div><div style="font-size:11px;opacity:.8;margin-top:2px">${msg}</div></div>${t!=='ok'?`<button class="btn btn-outline btn-sm" onclick="openEdit('${c.id}')">Modifier</button>`:''}</div>`
+  }).join('') : '<div class="empty"><div class="ei">✅</div><div class="et">Tout est à jour !</div></div>'
+}
+
+// ── TICKETS ───────────────────────────────────────────────
+function renderTickets() {
+  document.getElementById('tOpen').textContent = tickets.filter(t=>t.status==='open').length
+  document.getElementById('tProg').textContent = tickets.filter(t=>t.status==='in_progress').length
+  document.getElementById('tDone').textContent = tickets.filter(t=>t.status==='resolved').length
+  document.getElementById('ticketsList').innerHTML = tickets.length ? [...tickets].reverse().map(t => {
+    const c = clients.find(x=>x.id===t.cid)
+    const sp = t.status==='open' ? '<span class="pill p-red">Ouvert</span>' : t.status==='in_progress' ? '<span class="pill p-warn">En cours</span>' : '<span class="pill p-ok">Résolu</span>'
+    const pp = t.prio==='high' ? '<span class="pill p-red">🔴 Haute</span>' : t.prio==='medium' ? '<span class="pill p-warn">🟡 Moyenne</span>' : '<span class="pill p-ok">🟢 Faible</span>'
+    return `<div class="ticket" onclick="openTicket('${t.id}')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:16px">${t.status==='open'?'🔴':t.status==='in_progress'?'🟡':'🟢'}</span><div style="flex:1;font-size:13px;font-weight:600">${t.title}</div>${sp}${pp}</div><div style="font-size:11px;color:var(--muted)">👤 ${c?c.name:'—'} · ${new Date(t.date).toLocaleDateString('fr-FR')}</div>${t.reply?`<div style="margin-top:8px;padding:8px;background:rgba(0,212,255,.06);border-radius:6px;font-size:12px;color:var(--cyan)">💬 ${t.reply}</div>`:''}</div>`
+  }).join('') : '<div class="empty"><div class="ei">🎫</div><div class="et">Aucun ticket</div></div>'
+}
+
+function createTicket() {
+  const title = document.getElementById('tk-title').value.trim()
+  if(!title) return
+  tickets.push({id:Date.now()+'',cid:document.getElementById('tk-client').value,title,desc:document.getElementById('tk-desc').value,prio:document.getElementById('tk-prio').value,status:'open',date:new Date().toISOString(),reply:''})
+  save(); closeModal(); renderTickets(); updateBadges()
+}
+
+function openTicket(id) {
+  const t = tickets.find(x=>x.id===id); if(!t) return
+  const c = clients.find(x=>x.id===t.cid)
+  document.getElementById('mt-id').value = id
+  document.getElementById('mtTitle').textContent = t.title
+  document.getElementById('mtInfo').textContent = '👤 '+(c?c.name:'—')+' · '+new Date(t.date).toLocaleDateString('fr-FR')
+  document.getElementById('mtDesc').textContent = t.desc
+  document.getElementById('mt-reply').value = t.reply||''
+  document.getElementById('mt-status').value = t.status
+  openModal('mTicketDetail')
+}
+
+function updateTicket() {
+  const id = document.getElementById('mt-id').value
+  const t = tickets.find(x=>x.id===id); if(!t) return
+  t.reply = document.getElementById('mt-reply').value
+  t.status = document.getElementById('mt-status').value
+  save(); closeModal(); renderTickets(); updateBadges()
+}
+
+// ── REVENUS ───────────────────────────────────────────────
+function renderRevenus() {
+  const mrr = clients.filter(c=>c.active).reduce((s,c)=>s+(PRICES[c.license_type]||0),0)
+  const life = clients.filter(c=>c.license_type==='lifetime').length * 790
+  document.getElementById('rMrr').textContent = Math.round(mrr)+'€'
+  document.getElementById('rArr').textContent = Math.round(mrr*12)+'€'
+  document.getElementById('rTotal').textContent = Math.round(mrr*12+life)+'€'
+  document.getElementById('rLife').textContent = life+'€'
+  document.getElementById('revTable').innerHTML = clients.map(c => {
+    const m = PRICES[c.license_type]||0
+    const a = c.license_type==='lifetime'?790:c.license_type==='annual'?190:228
+    const since = c.created_at ? Math.round((Date.now()-new Date(c.created_at))/(86400000*30)) : 0
+    const tot = c.license_type==='lifetime'?790:Math.round(m*since)
+    return `<tr><td style="font-weight:600">${c.name}</td><td style="color:var(--muted)">${c.license_type==='lifetime'?'Lifetime':c.license_type==='annual'?'Annuel':'Mensuel'}</td><td style="font-family:'DM Mono',monospace">${Math.round(m)}€</td><td style="font-family:'DM Mono',monospace;color:var(--green)">${a}€</td><td style="color:var(--muted);font-size:12px">${c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'—'}</td><td style="font-family:'DM Mono',monospace;color:var(--yellow);font-weight:700">${tot}€</td></tr>`
+  }).join('')
+}
+
+// ── CONTRATS ──────────────────────────────────────────────
+function renderDocs() {
+  document.getElementById('docList').innerHTML = docs.length ? docs.map((d,i) => {
+    const c = clients.find(x=>x.id===d.cid)
+    const tp = d.type==='contrat' ? '<span class="pill p-cyan">Contrat</span>' : '<span class="pill p-purple">Devis</span>'
+    const sg = d.sig ? '<span class="pill p-ok">✍️ Signé</span>' : ''
+    return `<div style="background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-app-region:no-drag" onclick="loadDoc(${i})"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span>${d.type==='contrat'?'📝':'📄'}</span><span style="flex:1;font-size:13px;font-weight:600">${d.title||'Sans titre'}</span>${tp}${sg}</div><div style="font-size:11px;color:var(--muted)">${c?c.name:'—'} · ${d.montant?d.montant+'€ · ':''} ${new Date(d.date).toLocaleDateString('fr-FR')}</div></div>`
+  }).join('') : '<div class="empty"><div class="ei">📁</div><div class="et">Aucun document</div></div>'
+  // Remplir select client dans éditeur
+  document.getElementById('docClientSel').innerHTML = '<option value="">Client...</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')
+}
+
+function newDoc(type) {
+  curDoc = {idx:null,type,title:type==='contrat'?'Nouveau contrat':'Nouveau devis',cid:'',montant:'',content:getTemplate(type),date:new Date().toISOString(),sig:null}
+  showEditor()
+}
+
+function loadDoc(i) { curDoc = {...docs[i], idx:i}; showEditor() }
+
+function showEditor() {
+  document.getElementById('edEmpty').style.display = 'none'
+  document.getElementById('edZone').style.display = 'block'
+  document.getElementById('docTitle').value = curDoc.title||''
+  document.getElementById('docType').value = curDoc.type||'contrat'
+  document.getElementById('docClientSel').value = curDoc.cid||''
+  document.getElementById('docMontant').value = curDoc.montant||''
+  document.getElementById('docEd').innerHTML = curDoc.content||''
+}
+
+function saveDoc() {
+  if(!curDoc) return
+  curDoc.title = document.getElementById('docTitle').value
+  curDoc.type = document.getElementById('docType').value
+  curDoc.cid = document.getElementById('docClientSel').value
+  curDoc.montant = document.getElementById('docMontant').value
+  curDoc.content = document.getElementById('docEd').innerHTML
+  if(curDoc.idx !== null) { docs[curDoc.idx] = curDoc } else { curDoc.date = new Date().toISOString(); curDoc.idx = docs.length; docs.push(curDoc) }
+  save(); renderDocs()
+}
+
+function previewDoc() {
+  saveDoc()
+  const c = clients.find(x=>x.id===curDoc.cid)
+  document.getElementById('prevTitle').textContent = curDoc.title||'Document'
+  document.getElementById('prevContent').innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #eee"><div><div style="font-size:20px;font-weight:800">alma.</div><div style="font-size:11px;color:#888">Logiciel de gestion · SIREN 891 139 248</div></div><div style="text-align:right"><div style="font-size:16px;font-weight:700">${curDoc.title}</div><div style="font-size:11px;color:#888">${new Date().toLocaleDateString('fr-FR')}</div>${curDoc.montant?`<div style="font-size:15px;font-weight:700;color:#0077aa;margin-top:4px">${curDoc.montant}€</div>`:''}</div></div>${c?`<div style="margin-bottom:16px;padding:10px;background:#f8f8f8;border-radius:6px"><div style="font-weight:600">${c.name}</div><div style="font-size:12px;color:#666">${c.activity||''}</div></div>`:''}<div>${curDoc.content||''}</div>${curDoc.sig?`<div style="margin-top:30px;padding-top:16px;border-top:1px solid #eee"><div style="font-size:11px;color:#888;margin-bottom:6px">Signature électronique</div><img src="${curDoc.sig}" style="max-height:70px"></div>`:''}`
+  openModal('mPreview')
+}
+
+function printDoc() {
+  const w = window.open('','_blank')
+  w.document.write('<html><head><title>Document</title><style>body{font-family:sans-serif;padding:40px;color:#111}</style><meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Alma"/>
+<meta name="theme-color" content="#08080a"/>
+<link rel="manifest" href="manifest-admin.json"/>
+</head><body>'+document.getElementById('prevContent').innerHTML+'<script>if("serviceWorker"in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw-admin.js").catch(function(){});});</script>
+</body></html>')
+  w.document.close(); w.print()
+}
+
+function getTemplate(type) {
+  const today = new Date().toLocaleDateString('fr-FR')
+  const n = String(docs.length+1).padStart(4,'0')
+  if(type==='contrat') return `<h2 style="margin-bottom:4px">CONTRAT DE PRESTATION DE SERVICES</h2><p style="font-size:11px;color:#888;margin-bottom:16px">Réf : ALMA-CTR-${n} · ${today}</p><hr style="border:none;border-top:1px solid #444;margin:12px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:14px"><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Le Prestataire</p><p><strong>Lucas Fernandez</strong><br>Entrepreneur individuel · Nîmes (30)<br>SIREN : 891 139 248</p></div><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Le Client</p><p><strong>[Nom / Raison sociale]</strong><br>[Adresse]<br>SIREN : [Numéro]</p></div></div><hr style="border:none;border-top:1px solid #444;margin:12px 0"><h3 style="margin:12px 0 6px">Article 1 — Objet</h3><p>Installation, configuration et maintenance du logiciel Alma.</p><h3 style="margin:12px 0 6px">Article 2 — Durée</h3><p>Contrat à durée indéterminée, renouvelable tacitement.</p><h3 style="margin:12px 0 6px">Article 3 — Tarifs</h3><p>Installation : <strong>[MONTANT]€</strong> · Abonnement : <strong>[FORMULE]</strong><br>Pénalités de retard au taux légal en vigueur (art. L.441-10 du Code de commerce).</p><h3 style="margin:12px 0 6px">Article 4 — Propriété intellectuelle</h3><p>Le logiciel Alma reste la propriété exclusive du Prestataire. Droit d'usage personnel, non cessible.</p><h3 style="margin:12px 0 6px">Article 5 — Confidentialité</h3><p>Obligation de confidentialité réciproque pendant toute la durée du contrat et 3 ans après.</p><h3 style="margin:12px 0 6px">Article 6 — RGPD</h3><p>Traitement des données conforme au Règlement (UE) 2016/679. Données non cédées à des tiers.</p><h3 style="margin:12px 0 6px">Article 7 — Résiliation</h3><p>Préavis de 30 jours par écrit. Suspension immédiate en cas de non-paiement après relance.</p><h3 style="margin:12px 0 6px">Article 8 — Responsabilité</h3><p>Responsabilité limitée aux dommages directs, plafonnée aux 3 derniers mois de facturation.</p><h3 style="margin:12px 0 6px">Article 9 — Droit applicable</h3><p>Droit français. Tribunal compétent : Tribunal de Nîmes.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px;padding-top:16px;border-top:1px solid #444"><div><p style="font-size:11px;color:#888">Le Prestataire</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">Lucas Fernandez · Nîmes · ${today}</p></div><div><p style="font-size:11px;color:#888">Le Client — Lu et approuvé</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">[Nom] · [Ville] · [Date]</p></div></div><p style="font-size:10px;color:#888;text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid #333">TVA non applicable — Art. 293B du CGI · SIREN 891 139 248 · Fait à Nîmes en 2 exemplaires</p>`
+  return `<h2 style="margin-bottom:4px">DEVIS</h2><p style="font-size:11px;color:#888;margin-bottom:16px">N° ${n} · ${today} · Valable 30 jours</p><hr style="border:none;border-top:1px solid #444;margin:12px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px"><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Émetteur</p><p><strong>Lucas Fernandez</strong><br>Entrepreneur individuel<br>Nîmes (30) · SIREN 891 139 248</p></div><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Destinataire</p><p><strong>[Nom]</strong><br>[Adresse]<br>SIREN : [Numéro]</p></div></div><table style="width:100%;border-collapse:collapse;margin:12px 0"><tr style="background:#1a1a1f"><th style="padding:8px 10px;text-align:left;border:1px solid #333;font-size:11px">Désignation</th><th style="padding:8px 10px;text-align:center;border:1px solid #333;font-size:11px">Qté</th><th style="padding:8px 10px;text-align:right;border:1px solid #333;font-size:11px">Prix unitaire</th><th style="padding:8px 10px;text-align:right;border:1px solid #333;font-size:11px">Total HT</th></tr><tr><td style="padding:8px 10px;border:1px solid #333">Installation logiciel Alma</td><td style="padding:8px 10px;text-align:center;border:1px solid #333">1</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">380,00€</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">380,00€</td></tr><tr><td style="padding:8px 10px;border:1px solid #333">Abonnement mensuel</td><td style="padding:8px 10px;text-align:center;border:1px solid #333">1</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">19,00€/mois</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">19,00€</td></tr><tr><td colspan="3" style="padding:8px 10px;border:1px solid #333;text-align:right;font-weight:700">TVA non applicable — Art. 293B CGI</td><td style="padding:8px 10px;border:1px solid #333;text-align:right">0,00€</td></tr><tr style="background:#111"><td colspan="3" style="padding:10px;border:1px solid #333;text-align:right;font-weight:800;font-size:14px">TOTAL TTC</td><td style="padding:10px;border:1px solid #333;text-align:right;font-weight:800;font-size:14px;color:#00d4ff">[MONTANT]€</td></tr></table><div style="background:#111;border:1px solid #333;border-radius:6px;padding:10px 12px;margin:12px 0;font-size:12px"><p><strong>Paiement :</strong> Virement bancaire — 30% à la commande, solde à livraison</p><p style="margin-top:4px"><strong>Délai :</strong> [X] jours ouvrés après acceptation</p></div><p style="font-size:11px;color:#888">En cas de retard, pénalités au taux BCE +10 pts + indemnité forfaitaire 40€ (art. D.441-5 C. commerce).<br>Pas d'escompte pour paiement anticipé.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px;padding-top:16px;border-top:1px solid #333"><div><p style="font-size:11px;color:#888">Bon pour accord — Le Client</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">[Nom] · [Date]</p></div><div><p style="font-size:11px;color:#888">Le Prestataire</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">Lucas Fernandez · ${today}</p></div></div><p style="font-size:10px;color:#888;text-align:center;margin-top:14px;padding-top:10px;border-top:1px solid #333">TVA non applicable — Art. 293B du CGI · SIREN 891 139 248</p>`
+}
+
+function fmt(c) { document.execCommand(c,false,null); document.getElementById('docEd').focus() }
+function ins(t) {
+  const m = {titre:'<h3 style="margin:10px 0 6px">Titre de section</h3>',sep:'<hr style="border:none;border-top:1px solid #444;margin:14px 0"><br>',clause:'<p><strong>Article X —</strong> Rédigez votre clause ici.</p><br>',sig:'<div style="margin-top:30px;padding-top:16px;border-top:1px solid #444"><p>Signature :</p><div style="height:50px;border-bottom:1px solid #666;width:200px;margin-top:16px"></div></div>',tab:'<table style="width:100%;border-collapse:collapse;margin:10px 0"><tr><th style="border:1px solid #444;padding:6px">Col 1</th><th style="border:1px solid #444;padding:6px">Col 2</th><th style="border:1px solid #444;padding:6px">Montant</th></tr><tr><td style="border:1px solid #444;padding:6px">Ligne</td><td style="border:1px solid #444;padding:6px"></td><td style="border:1px solid #444;padding:6px"></td></tr></table>'}
+  document.execCommand('insertHTML',false,m[t]); document.getElementById('docEd').focus()
+}
+
+// ── SIGNATURE ─────────────────────────────────────────────
+let draw=false, sCtx, sLast={}
+function openSig() {
+  closeModal()
+  setTimeout(() => {
+    openModal('mSign')
+    const cv = document.getElementById('sigCanvas')
+    sCtx = cv.getContext('2d')
+    sCtx.clearRect(0,0,cv.width,cv.height)
+    sCtx.strokeStyle='#000'; sCtx.lineWidth=2.5; sCtx.lineCap='round'
+    cv.onmousedown = e => { draw=true; sLast={x:e.offsetX,y:e.offsetY} }
+    cv.onmousemove = e => { if(!draw) return; sCtx.beginPath(); sCtx.moveTo(sLast.x,sLast.y); sCtx.lineTo(e.offsetX,e.offsetY); sCtx.stroke(); sLast={x:e.offsetX,y:e.offsetY} }
+    cv.onmouseup = cv.onmouseleave = () => draw=false
+  }, 150)
+}
+function clearSig() { sCtx.clearRect(0,0,460,150) }
+function applySig() {
+  if(!curDoc) return
+  curDoc.sig = document.getElementById('sigCanvas').toDataURL()
+  if(curDoc.idx!==null) docs[curDoc.idx].sig = curDoc.sig
+  save(); closeModal(); setTimeout(() => openModal('mPreview'),100)
+}
+
+// ── ABONNEMENTS ───────────────────────────────────────────
+function renderAbonnements() {
+  document.getElementById('aboTable').innerHTML = clients.length ? clients.map(c => {
+    const tp = c.license_type==='lifetime'?'<span class="pill p-purple">♾ Lifetime</span>':c.license_type==='annual'?'<span class="pill p-ok">Annuel</span>':'<span class="pill p-cyan">Mensuel</span>'
+    const sp = c.active?'<span class="pill p-ok">Actif</span>':'<span class="pill p-red">Suspendu</span>'
+    const m = c.license_type==='lifetime'?'790€ unique':c.license_type==='annual'?'190€/an':'19€/mois'
+    return `<tr><td style="font-weight:600">${c.name}</td><td style="color:var(--muted);font-size:12px">${c.activity||'—'}</td><td>${tp}</td><td style="font-family:'DM Mono',monospace;color:var(--yellow)">${m}</td><td style="font-size:12px;color:var(--muted)">${c.next_payment?new Date(c.next_payment).toLocaleDateString('fr-FR'):'—'}</td><td>${sp}</td><td style="-webkit-app-region:no-drag"><button class="btn ${c.active?'btn-red':'btn-green'} btn-sm" onclick="toggle('${c.id}',${c.active})">${c.active?'⏸':'▶'}</button></td></tr>`
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Aucun client</td></tr>'
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function fillSelects() {
+  const opts = '<option value="">Sélectionner...</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')
+  document.getElementById('tk-client').innerHTML = opts
+  document.getElementById('docClientSel').innerHTML = '<option value="">Client...</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')
+}
+
+function updateBadges() {
+  const o = tickets.filter(t=>t.status==='open').length
+  const e = clients.filter(c=>{ const d=alertDays(c); return d!==null&&d<0 }).length
+  const bt = document.getElementById('badgeTickets'); bt.textContent=o; bt.style.display=o?'block':'none'
+  const ba = document.getElementById('badgeAlertes'); ba.textContent=e; ba.style.display=e?'block':'none'
+}
+
+function save() {
+  localStorage.setItem('alma_tickets', JSON.stringify(tickets))
+  localStorage.setItem('alma_docs', JSON.stringify(docs))
+}
+
+function genKey() {
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s=()=>Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join('')
+  return `ALMA-${s()}-${s()}-${s()}`
+}
+
+async function toggle(id, active) {
+  await api('PATCH', '/rest/v1/clients?id=eq.'+id, {active:!active})
+  await init()
+}
+
+async async function createClient() {
+  const name = document.getElementById('nc-name').value.trim()
+  if(!name) { document.getElementById('nc-err').textContent='Nom obligatoire'; document.getElementById('nc-err').style.display='block'; return }
+  const btn = document.getElementById('nc-sub'); btn.disabled=true; btn.textContent='...'
+  try {
+    await api('POST', '/rest/v1/clients', {name, activity:document.getElementById('nc-act').value, email:document.getElementById('nc-email').value, phone:document.getElementById('nc-phone').value, license_key:document.getElementById('nc-key').value, license_type:document.getElementById('nc-type').value, active:true, is_admin:false, next_payment:document.getElementById('nc-next').value||null})
+    closeModal(); await init()
+  } catch(e) { document.getElementById('nc-err').textContent='Erreur: '+e.message; document.getElementById('nc-err').style.display='block' }
+  btn.disabled=false; btn.textContent='Créer'
+}
+
+function openEdit(id) {
+  const c = clients.find(x=>x.id===id); if(!c) return
+  document.getElementById('ec-id').value=c.id
+  document.getElementById('ec-name').value=c.name||''
+  document.getElementById('ec-act').value=c.activity||''
+  document.getElementById('ec-email').value=c.email||''
+  document.getElementById('ec-phone').value=c.phone||''
+  document.getElementById('ec-type').value=c.license_type||'monthly'
+  document.getElementById('ec-next').value=c.next_payment?c.next_payment.slice(0,10):''
+  openModal('mEditClient')
+}
+
+async function saveEdit() {
+  const id = document.getElementById('ec-id').value
+  await api('PATCH', '/rest/v1/clients?id=eq.'+id, {name:document.getElementById('ec-name').value, activity:document.getElementById('ec-act').value, email:document.getElementById('ec-email').value, phone:document.getElementById('ec-phone').value, license_type:document.getElementById('ec-type').value, next_payment:document.getElementById('ec-next').value||null})
+  closeModal(); await init()
+}
+
+function goPage(name, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'))
+  document.getElementById('page-'+name).classList.add('active')
+  if(el) el.classList.add('active')
+  const t = {clients:'Mes clients',alertes:'Alertes paiement',tickets:'Support tickets',revenus:'Revenus',contrats:'Devis & Contrats',abonnements:'Abonnements'}
+  document.getElementById('pageTitle').textContent = t[name]||name
+  const showBtn = name==='clients'
+  document.getElementById('topBtn').style.display = showBtn?'block':'none'
+}
+
+function openModal(id) {
+  if(id==='mNewClient') {
+    document.getElementById('nc-key').value=genKey()
+    ;['nc-name','nc-act','nc-email','nc-phone','nc-next'].forEach(i=>document.getElementById(i).value='')
+    document.getElementById('nc-err').style.display='none'
+  }
+  var el=document.getElementById(id); if(el){el.classList.add('show');el.style.display='flex';}
+}
+
+function closeModal() { document.querySelectorAll('.overlay').forEach(function(o){o.classList.remove('show');o.style.display='none';}) }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal()}))
+
+init()
+
+/* ── MOBILE FUNCTIONS ── */
+function goPageMob(name, el) {
+  // Cacher toutes les pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  var pg = document.getElementById('page-' + name);
+  if(pg) pg.classList.add('active');
+  // Bottom nav
+  document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else {
+    var btn = document.getElementById('bn-' + name);
+    if(btn) btn.classList.add('active');
+  }
+  // FAB : montrer seulement sur clients
+  var fab = document.getElementById('fab-btn');
+  if(fab) fab.style.display = name === 'clients' ? 'flex' : 'none';
+}
+
+function goPage(name, el) {
+  // Desktop : sync sidebar
+  document.querySelectorAll('.sd-nav').forEach(n => n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // Appeler goPageMob
+  goPageMob(name, null);
+}
+
+function fabAction() {
+  var active = document.querySelector('.page.active');
+  if(active && active.id === 'page-clients') openNewClient();
+}
+
+function openNewClient() {
+  var m = document.getElementById('mNewClient');
+  if(m) { m.classList.add('show'); m.style.display='flex'; }
+}
+
+function toggleMore() {
+  var m = document.getElementById('more-modal');
+  if(m) m.classList.toggle('show');
+  if(m && m.classList.contains('show')) m.style.display='flex';
+  else if(m) setTimeout(function(){ m.style.display='none'; }, 200);
+}
+
+/* Render clients mobile */
+function renderClientsMob(clients) {
+  var el = document.getElementById('clientsListMob');
+  if(!el) return;
+  if(!clients || !clients.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Aucun client</div><div class="empty-sub">Ajoutez votre premier client</div></div>';
+    return;
+  }
+  el.innerHTML = clients.map(function(c) {
+    var init = (c.nom||c.name||c.email||'?')[0].toUpperCase();
+    var statut = c.statut||c.status||'actif';
+    var statusClass = statut === 'actif' ? 'status-actif' : statut === 'essai' ? 'status-essai' : 'status-expire';
+    var statusLabel = statut === 'actif' ? 'Actif' : statut === 'essai' ? 'Essai' : 'Expiré';
+    var montant = c.montant ? c.montant + '€/mois' : '';
+    return '<div class="client-item" onclick="openClientDetail(\''+c.id+'\')">'+
+      '<div class="client-av">'+init+'</div>'+
+      '<div class="client-info">'+
+        '<div class="client-name">'+(c.nom||c.name||c.email||'—')+'</div>'+
+        '<div class="client-meta">'+(c.email||'')+' · '+(c.activite||c.activity||'')+'</div>'+
+      '</div>'+
+      '<div class="client-right">'+
+        '<div class="client-status '+statusClass+'">'+statusLabel+'</div>'+
+        '<div class="client-amount">'+montant+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+/* Override renderClients pour appeler aussi renderClientsMob */
+var _origRenderClients = renderClients;
+function renderClients() {
+  _origRenderClients();
+  // Sync mobile list
+  setTimeout(function(){
+    var rows = document.querySelectorAll('[data-cid]');
+    var mobs = [];
+    rows.forEach(function(r){
+      mobs.push({
+        id: r.getAttribute('data-cid'),
+        nom: r.querySelector('.c-name')?r.querySelector('.c-name').textContent:'',
+        email: r.querySelector('.c-email')?r.querySelector('.c-email').textContent:'',
+        statut: r.getAttribute('data-statut')||'actif',
+        activite: r.querySelector('.c-activite')?r.querySelector('.c-activite').textContent:'',
+        montant: r.getAttribute('data-montant')||''
+      });
+    });
+    renderClientsMob(mobs);
+  }, 100);
+}
+
+/* PWA */
+var _pwa = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault(); _pwa = e;
+  if(window.innerWidth <= 768) document.getElementById('pwa-toast').style.display = 'flex';
+});
+function installPWA(){
+  if(!_pwa) return;
+  _pwa.prompt();
+  _pwa.userChoice.then(function(){ _pwa=null; document.getElementById('pwa-toast').style.display='none'; });
+}
+window.addEventListener('appinstalled', function(){
+  document.getElementById('pwa-toast').style.display='none';
+});
+
+/* SW */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw-admin.js').catch(function(){}); });
+}
+
+/* Sync badges bottom nav */
+function syncBadgesMob(){
+  var a = document.getElementById('badgeAlertes');
+  var ma = document.getElementById('mob-badge-alertes');
+  if(a && ma){ var t=a.textContent.trim(); ma.textContent=t; ma.style.display=t?'flex':'none'; }
+  var k = document.getElementById('badgeTickets');
+  var mk = document.getElementById('mob-badge-tickets');
+  if(k && mk){ var t2=k.textContent.trim(); mk.textContent=t2; mk.style.display=t2?'flex':'none'; }
+  // Notif dot
+  var nd = document.getElementById('notifDot');
+  if(nd && a) nd.style.display = a.textContent.trim() ? 'block' : 'none';
+}
+setInterval(syncBadgesMob, 3000);
+
+</script>
+<script>if("serviceWorker"in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw-admin.js").catch(function(){});});</script>
+</body>
+</html>
