@@ -586,29 +586,60 @@ if('serviceWorker'in navigator)window.addEventListener('load',function(){navigat
 
   async function push(world,key){
     var v=localStorage.getItem(key);if(!v)return
-    try{var d=JSON.parse(v);await fetch(SB+'/rest/v1/food_inventory?client_id=eq.'+CID+'&world=eq.'+world,{method:'PATCH',headers:H,body:JSON.stringify({products:d.products||[],history:d.history||[],updated_at:new Date().toISOString()})})}catch(e){}
+    try{
+      var d=JSON.parse(v)
+      // Ne pas pousser si vide
+      if(!d.products&&!d.history)return
+      await fetch(SB+'/rest/v1/food_inventory?client_id=eq.'+CID+'&world=eq.'+world,{method:'PATCH',headers:H,body:JSON.stringify({products:d.products||[],history:d.history||[],updated_at:new Date().toISOString()})})
+    }catch(e){}
   }
 
   async function pushKm(){
     var v=localStorage.getItem('cm_km');if(!v)return
-    try{await fetch(SB+'/rest/v1/food_km?client_id=eq.'+CID,{method:'PATCH',headers:H,body:JSON.stringify({trajets:JSON.parse(v),updated_at:new Date().toISOString()})})}catch(e){}
+    try{
+      var d=JSON.parse(v);if(!d||!d.length)return
+      await fetch(SB+'/rest/v1/food_km?client_id=eq.'+CID,{method:'PATCH',headers:H,body:JSON.stringify({trajets:d,updated_at:new Date().toISOString()})})
+    }catch(e){}
   }
 
   async function pull(){
     try{
-      var rSF=await fetch(SB+'/rest/v1/food_inventory?client_id=eq.'+CID+'&world=eq.sf&select=products,history',{headers:H})
-      var dSF=await rSF.json();if(dSF&&dSF[0])localStorage.setItem('sf_inv_v4',JSON.stringify(dSF[0]))
-      var rCM=await fetch(SB+'/rest/v1/food_inventory?client_id=eq.'+CID+'&world=eq.cm&select=products,history',{headers:H})
-      var dCM=await rCM.json();if(dCM&&dCM[0])localStorage.setItem('cm_inv_v1',JSON.stringify(dCM[0]))
+      var rSF=await fetch(SB+'/rest/v1/food_inventory?client_id=eq.'+CID+'&world=eq.sf&select=products,history,updated_at',{headers:H})
+      var dSF=await rSF.json()
+      // Ne remplacer que si Supabase a vraiment des données
+      if(dSF&&dSF[0]&&(dSF[0].products&&dSF[0].products.length||dSF[0].history&&dSF[0].history.length)){
+        localStorage.setItem('sf_inv_v4',JSON.stringify(dSF[0]))
+      }
+
+      var rCM=await fetch(SB+'/rest/v1/food_inventory?client_id=eq.'+CID+'&world=eq.cm&select=products,history,updated_at',{headers:H})
+      var dCM=await rCM.json()
+      if(dCM&&dCM[0]&&(dCM[0].products&&dCM[0].products.length||dCM[0].history&&dCM[0].history.length)){
+        localStorage.setItem('cm_inv_v1',JSON.stringify(dCM[0]))
+      }
+
       var rKM=await fetch(SB+'/rest/v1/food_km?client_id=eq.'+CID+'&select=trajets',{headers:H})
-      var dKM=await rKM.json();if(dKM&&dKM[0]&&dKM[0].trajets)localStorage.setItem('cm_km',JSON.stringify(dKM[0].trajets))
+      var dKM=await rKM.json()
+      if(dKM&&dKM[0]&&dKM[0].trajets&&dKM[0].trajets.length){
+        localStorage.setItem('cm_km',JSON.stringify(dKM[0].trajets))
+      }
+
       if(typeof renderPage==='function')renderPage()
     }catch(e){}
   }
 
-  setTimeout(pull,1500)
-  setInterval(pull,30000)
+  // Push au demarrage (mobile -> Supabase)
+  setTimeout(function(){
+    push('sf','sf_inv_v4')
+    push('cm','cm_inv_v1')
+    pushKm()
+    // Puis pull apres 3s pour recuperer les donnees desktop
+    setTimeout(pull, 3000)
+  }, 1500)
 
+  // Sync toutes les 30s
+  setInterval(function(){pull();push('sf','sf_inv_v4');push('cm','cm_inv_v1')}, 30000)
+
+  // Push instantane quand une donnee change
   var _orig=localStorage.setItem.bind(localStorage)
   localStorage.setItem=function(k,v){
     _orig(k,v)
