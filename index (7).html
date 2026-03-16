@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Alma Admin</title>
+<meta name="theme-color" content="#08080a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Alma"/>
+<link rel="manifest" href="manifest-admin.json"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjkwIiBmaWxsPSIjMDgwODBhIi8+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSI5MCIgZmlsbD0idXJsKCNncmFkKSIvPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzAwZDRmZjtzdG9wLW9wYWNpdHk6LjE1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzAwNzdhYTtzdG9wLW9wYWNpdHk6LjA1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8dGV4dCB5PSIzNDAiIHg9IjgwIiBmb250LXNpemU9IjMwMCIgZm9udC13ZWlnaHQ9IjkwMCIgZmlsbD0iIzAwZDRmZiIgZm9udC1mYW1pbHk9IidQbHVzIEpha2FydGEgU2FucycsQXJpYWwsc2Fucy1zZXJpZiI+QTwvdGV4dD4KICA8dGV4dCB5PSI0NjAiIHg9IjkwIiBmb250LXNpemU9IjEwMCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjQpIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiI+bG1hPC90ZXh0Pgo8L3N2Zz4="/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#08080a;--s1:#0f0f12;--s2:#141418;--s3:#1a1a1f;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.03);
+  --cyan:#00d4ff;--green:#00ff88;--yellow:#ffb400;--red:#ff4d4d;--purple:#a855f7;
+  --text:#f0f0f2;--muted:#606070;--muted2:#3a3a48;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
+
+/* ── LAYOUT ── */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  background: var(--bg);
+}
+
+/* Desktop : sidebar visible */
+@media (min-width: 769px) {
+  .app { max-width: 100%; flex-direction: row; }
+  .topbar-mobile { display: none !important; }
+  .bottom-nav { display: none !important; }
+  .sidebar-desktop { display: flex !important; }
+  .content-area { padding-top: 0; padding-bottom: 0; }
+}
+
+/* ── TOPBAR MOBILE ── */
+.topbar-mobile {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: calc(var(--safe-top) + 56px);
+  padding-top: var(--safe-top);
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.topbar-inner {
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar-logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--cyan);
+  letter-spacing: -.5px;
+}
+.topbar-logo span { color: var(--text); opacity: .3; }
+.topbar-badge-area { display: flex; align-items: center; gap: 8px; }
+.topbar-notif {
+  width: 36px; height: 36px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; position: relative;
+}
+.notif-dot {
+  width: 8px; height: 8px;
+  background: var(--red);
+  border-radius: 50%;
+  position: absolute; top: 6px; right: 6px;
+  display: none;
+}
+.topbar-av {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), #0077aa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: #000;
+}
+
+/* ── CONTENT AREA ── */
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: calc(var(--safe-top) + 56px);
+  padding-bottom: calc(var(--safe-bot) + 64px);
+}
+
+/* ── PAGES ── */
+.page { display: none; padding: 20px; }
+.page.active { display: block; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.5px;
+}
+.page-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── STATS CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+.stat-card.full { grid-column: 1 / -1; }
+.stat-n {
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'DM Mono', monospace;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-l {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+/* ── SECTION CARD ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.card-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── LISTE CLIENTS MOBILE ── */
+.client-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border2);
+  cursor: pointer;
+  transition: background .15s;
+}
+.client-item:last-child { border: none; }
+.client-item:active { background: var(--s2); }
+.client-av {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--cyan), #0077aa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: #000;
+  flex-shrink: 0;
+}
+.client-info { flex: 1; min-width: 0; }
+.client-name {
+  font-size: 14px; font-weight: 700;
+  color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.client-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.client-right { text-align: right; flex-shrink: 0; }
+.client-status {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 99px;
+  margin-bottom: 4px;
+}
+.status-actif { background: rgba(0,255,136,.1); color: var(--green); }
+.status-expire { background: rgba(255,77,77,.1); color: var(--red); }
+.status-essai { background: rgba(255,180,0,.1); color: var(--yellow); }
+.client-amount {
+  font-size: 12px; font-weight: 700;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── ALERTE ITEM ── */
+.alerte-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border2);
+}
+.alerte-item:last-child { border: none; }
+.alerte-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.alerte-info { flex: 1; }
+.alerte-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.alerte-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.alerte-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 99px;
+  flex-shrink: 0;
+}
+
+/* ── BOUTONS ── */
+.btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; border: none;
+  font-family: inherit; transition: all .15s;
+}
+.btn-cyan { background: var(--cyan); color: #000; }
+.btn-cyan:active { opacity: .8; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-red { background: rgba(255,77,77,.12); color: var(--red); border: 1px solid rgba(255,77,77,.2); }
+.btn-sm { padding: 7px 12px; font-size: 11px; border-radius: 8px; }
+.btn-full { width: 100%; text-align: center; padding: 14px; font-size: 14px; }
+
+/* ── FAB (bouton action flottant) ── */
+.fab {
+  position: fixed;
+  bottom: calc(var(--safe-bot) + 76px);
+  right: 20px;
+  width: 52px; height: 52px;
+  background: var(--cyan);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,212,255,.3);
+  border: none; z-index: 150;
+  transition: transform .15s;
+}
+.fab:active { transform: scale(.92); }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  padding-bottom: var(--safe-bot);
+}
+.bottom-nav-inner {
+  display: flex;
+  height: 60px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.bn {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer;
+  color: var(--muted); border: none;
+  background: transparent; font-family: inherit;
+  font-size: 10px; font-weight: 600;
+  transition: color .15s; position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.bn.active { color: var(--cyan); }
+.bn-icon { font-size: 22px; line-height: 1; }
+.bn-badge {
+  position: absolute; top: 8px;
+  right: calc(50% - 20px);
+  min-width: 16px; height: 16px;
+  background: var(--red); color: #fff;
+  border-radius: 99px; font-size: 9px;
+  font-weight: 800; display: none;
+  align-items: center; justify-content: center;
+  padding: 0 4px;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+.search-bar input {
+  flex: 1; background: transparent; border: none;
+  color: var(--text); font-size: 14px;
+  font-family: inherit; outline: none;
+}
+.search-bar input::placeholder { color: var(--muted); }
+
+/* ── MODAL PLEIN ECRAN MOBILE ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.7); z-index: 900;
+  align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-sheet {
+  background: var(--s1);
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 480px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: 0 0 calc(var(--safe-bot) + 20px);
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-handle {
+  width: 36px; height: 4px;
+  background: var(--border);
+  border-radius: 99px;
+  margin: 12px auto 4px;
+}
+.modal-header {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  justify-content: space-between;
+}
+.modal-title { font-size: 16px; font-weight: 800; }
+.modal-close {
+  width: 30px; height: 30px;
+  background: var(--s2); border: none;
+  border-radius: 50%; color: var(--muted);
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 20px; }
+
+/* ── INPUT ── */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block; font-size: 11px;
+  font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text); font-size: 15px;
+  font-family: inherit; outline: none;
+  transition: border-color .15s;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--cyan);
+}
+.field select { background: var(--s2); }
+
+/* ── DESKTOP SIDEBAR ── */
+.sidebar-desktop {
+  display: none;
+  width: 52px;
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  gap: 2px;
+  flex-shrink: 0;
+  transition: width .25s;
+  overflow: hidden;
+}
+.sidebar-desktop:hover { width: 190px; }
+.sd-logo {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg,var(--cyan),#0077aa);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 15px; color: #000;
+  flex-shrink: 0; margin-bottom: 14px;
+}
+.sd-nav {
+  width: 100%; display: flex; align-items: center;
+  gap: 10px; padding: 9px; border-radius: 8px;
+  cursor: pointer; color: var(--muted);
+  transition: all .15s; white-space: nowrap;
+  overflow: hidden; border: none; background: transparent;
+  font-family: inherit;
+}
+.sd-nav:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.sd-nav.active { color: var(--cyan); background: rgba(0,212,255,.08); }
+.sd-icon { font-size: 17px; flex-shrink: 0; width: 34px; text-align: center; }
+.sd-text { font-size: 12px; font-weight: 500; opacity: 0; transition: opacity .2s; }
+.sidebar-desktop:hover .sd-text { opacity: 1; }
+.sd-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 99px; display: none; }
+.sidebar-desktop:hover .sd-badge { display: block; }
+.sd-bottom { margin-top: auto; }
+.sd-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity .2s; padding: 0 14px; margin: 8px 0 4px; width: 100%; }
+.sidebar-desktop:hover .sd-label { opacity: 1; }
+
+/* ── REVENUS ── */
+.rev-big {
+  text-align: center;
+  padding: 28px 20px;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  margin-bottom: 14px;
+}
+.rev-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.rev-value { font-size: 42px; font-weight: 800; font-family: 'DM Mono', monospace; color: var(--cyan); }
+.rev-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* ── TICKET ITEM ── */
+.ticket-item {
+  display: flex; align-items: flex-start;
+  gap: 12px; padding: 14px 16px;
+  border-bottom: 1px solid var(--border2);
+  cursor: pointer; transition: background .15s;
+}
+.ticket-item:last-child { border: none; }
+.ticket-item:active { background: var(--s2); }
+.ticket-prio {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 5px;
+}
+.ticket-info { flex: 1; }
+.ticket-subject { font-size: 13px; font-weight: 600; color: var(--text); }
+.ticket-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.ticket-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; flex-shrink: 0; }
+
+/* ── SEPARATEUR ── */
+.sep { height: 1px; background: var(--border); margin: 4px 0; }
+.sec-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; padding: 10px 16px 4px; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 48px 20px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-text { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 12px; }
+
+/* ── PWA TOAST ── */
+.pwa-toast {
+  display: none; position: fixed;
+  bottom: calc(var(--safe-bot) + 72px);
+  left: 12px; right: 12px;
+  background: var(--s2);
+  border: 1px solid var(--cyan);
+  border-radius: 16px; padding: 14px 16px;
+  z-index: 500; align-items: center; gap: 12px;
+  box-shadow: 0 0 40px rgba(0,212,255,.15);
+  animation: slideUp .3s ease;
+}
+.pwa-toast-btn { padding: 9px 16px; background: var(--cyan); color: #000; border: none; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer; font-family: inherit; white-space: nowrap; }
+.pwa-close-btn { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0; line-height: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+
+<!-- ─────────────── DESKTOP SIDEBAR ─────────────── -->
+<div class="sidebar-desktop">
+  <div class="sd-logo">A</div>
+  <div class="sd-label">Principal</div>
+  <button class="sd-nav active" onclick="goPage('clients',this)"><span class="sd-icon">👥</span><span class="sd-text">Mes clients</span></button>
+  <button class="sd-nav" onclick="goPage('alertes',this)"><span class="sd-icon">🔔</span><span class="sd-text">Alertes</span><span class="sd-badge" id="badgeAlertes"></span></button>
+  <button class="sd-nav" onclick="goPage('tickets',this)"><span class="sd-icon">🎫</span><span class="sd-text">Support</span><span class="sd-badge" id="badgeTickets"></span></button>
+  <div class="sd-label">Finance</div>
+  <button class="sd-nav" onclick="goPage('revenus',this)"><span class="sd-icon">💰</span><span class="sd-text">Revenus</span></button>
+  <button class="sd-nav" onclick="goPage('contrats',this)"><span class="sd-icon">📄</span><span class="sd-text">Contrats</span></button>
+  <button class="sd-nav" onclick="goPage('abonnements',this)"><span class="sd-icon">📋</span><span class="sd-text">Abonnements</span></button>
+  <div class="sd-bottom">
+    <div class="sd-label">Compte</div>
+    <button class="sd-nav" onclick="logout()"><span class="sd-icon">🚪</span><span class="sd-text">Déconnexion</span></button>
+  </div>
+</div>
+
+<!-- ─────────────── APP CONTAINER ─────────────── -->
+<div class="app">
+
+  <!-- TOPBAR MOBILE -->
+  <div class="topbar-mobile">
+    <div class="topbar-inner">
+      <div class="topbar-logo">alma<span>.</span></div>
+      <div class="topbar-badge-area">
+        <div class="topbar-notif" onclick="goPageMob('alertes')">
+          🔔<div class="notif-dot" id="notifDot"></div>
+        </div>
+        <div class="topbar-av" id="topbar-av">L</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU SCROLLABLE -->
+  <div class="content-area" id="content-area">
+
+    <!-- ── PAGE CLIENTS ── -->
+    <div class="page active" id="page-clients">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Clients</div>
+          <div class="page-subtitle" id="sub-clients">Chargement…</div>
+        </div>
+        <button class="btn btn-cyan btn-sm" onclick="openNewClient()">+ Nouveau</button>
+      </div>
+      <!-- Stats -->
+      <div class="stats-grid" id="statsClients" style="display:none">
+        <div class="stat-card"><div class="stat-n" id="sTotal" style="color:var(--cyan)">0</div><div class="stat-l">Total</div></div>
+        <div class="stat-card"><div class="stat-n" id="sActifs" style="color:var(--green)">0</div><div class="stat-l">Actifs</div></div>
+        <div class="stat-card"><div class="stat-n" id="sExp" style="color:var(--red)">0</div><div class="stat-l">Expirés</div></div>
+        <div class="stat-card"><div class="stat-n" id="sMrr" style="color:var(--yellow)">0€</div><div class="stat-l">MRR</div></div>
+      </div>
+      <!-- Search -->
+      <div class="search-bar">
+        <span style="font-size:16px">🔍</span>
+        <input type="text" id="searchInput" placeholder="Rechercher un client…" oninput="filterC(this.value)"/>
+      </div>
+      <!-- Liste -->
+      <div class="card" id="clientsListMob" style="overflow:hidden"></div>
+    </div>
+
+    <!-- ── PAGE ALERTES ── -->
+    <div class="page" id="page-alertes">
+      <div class="page-header">
+        <div><div class="page-title">Alertes</div><div class="page-subtitle">Paiements à surveiller</div></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n" id="aExp" style="color:var(--red)">0</div><div class="stat-l">Expirés</div></div>
+        <div class="stat-card"><div class="stat-n" id="aSoon" style="color:var(--yellow)">0</div><div class="stat-l">Bientôt</div></div>
+        <div class="stat-card full"><div class="stat-n" id="aOk" style="color:var(--green)">0</div><div class="stat-l">OK</div></div>
+      </div>
+      <div class="card" id="alertesListMob"></div>
+    </div>
+
+    <!-- ── PAGE TICKETS ── -->
+    <div class="page" id="page-tickets">
+      <div class="page-header">
+        <div><div class="page-title">Support</div><div class="page-subtitle">Tickets clients</div></div>
+        <button class="btn btn-outline btn-sm" onclick="createTicket()">+ Ticket</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n" id="tOpen" style="color:var(--red)">0</div><div class="stat-l">Ouverts</div></div>
+        <div class="stat-card"><div class="stat-n" id="tProg" style="color:var(--yellow)">0</div><div class="stat-l">En cours</div></div>
+        <div class="stat-card full"><div class="stat-n" id="tDone" style="color:var(--green)">0</div><div class="stat-l">Résolus</div></div>
+      </div>
+      <div class="card" id="ticketsListMob"></div>
+    </div>
+
+    <!-- ── PAGE REVENUS ── -->
+    <div class="page" id="page-revenus">
+      <div class="page-header"><div class="page-title">Revenus</div></div>
+      <div class="rev-big">
+        <div class="rev-label">MRR — Revenu mensuel récurrent</div>
+        <div class="rev-value" id="rMrr">0€</div>
+        <div class="rev-sub">Mis à jour automatiquement</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n" id="rArr" style="color:var(--green)">0€</div><div class="stat-l">ARR</div></div>
+        <div class="stat-card"><div class="stat-n" id="rAvg" style="color:var(--cyan)">0€</div><div class="stat-l">Panier moyen</div></div>
+        <div class="stat-card"><div class="stat-n" id="rStarter" style="color:var(--muted)">0</div><div class="stat-l">Starter</div></div>
+        <div class="stat-card"><div class="stat-n" id="rPro" style="color:var(--cyan)">0</div><div class="stat-l">Pro</div></div>
+        <div class="stat-card"><div class="stat-n" id="rPremium" style="color:var(--purple)">0</div><div class="stat-l">Premium</div></div>
+        <div class="stat-card"><div class="stat-n" id="rLifetime" style="color:var(--yellow)">0</div><div class="stat-l">Lifetime</div></div>
+      </div>
+    </div>
+
+    <!-- ── PAGE CONTRATS ── -->
+    <div class="page" id="page-contrats">
+      <div class="page-header">
+        <div><div class="page-title">Contrats</div><div class="page-subtitle">Devis & documents</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="newDoc('devis')">📄</button>
+          <button class="btn btn-cyan btn-sm" onclick="newDoc('contrat')">📝 Contrat</button>
+        </div>
+      </div>
+      <div id="docsList"></div>
+    </div>
+
+    <!-- ── PAGE ABONNEMENTS ── -->
+    <div class="page" id="page-abonnements">
+      <div class="page-header"><div class="page-title">Abonnements</div></div>
+      <div class="card" style="overflow:auto">
+        <table style="width:100%;min-width:480px;border-collapse:collapse">
+          <thead><tr style="border-bottom:1px solid var(--border)">
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Client</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Type</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Montant</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Prochain</th>
+            <th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--muted);font-weight:600">Statut</th>
+          </tr></thead>
+          <tbody id="aboTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <!-- BOTTOM NAV MOBILE -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="bn active" id="bn-clients" onclick="goPageMob('clients',this)">
+        <span class="bn-icon">👥</span>Clients
+      </button>
+      <button class="bn" id="bn-alertes" onclick="goPageMob('alertes',this)">
+        <span class="bn-icon">🔔</span>Alertes
+        <span class="bn-badge" id="mob-badge-alertes"></span>
+      </button>
+      <button class="bn" id="bn-tickets" onclick="goPageMob('tickets',this)">
+        <span class="bn-icon">🎫</span>Support
+        <span class="bn-badge" id="mob-badge-tickets"></span>
+      </button>
+      <button class="bn" id="bn-revenus" onclick="goPageMob('revenus',this)">
+        <span class="bn-icon">💰</span>Revenus
+      </button>
+      <button class="bn" id="bn-more" onclick="toggleMore()">
+        <span class="bn-icon">⋯</span>Plus
+      </button>
+    </div>
+  </nav>
+
+  <!-- FAB -->
+  <button class="fab" id="fab-btn" onclick="fabAction()" title="Nouveau client">+</button>
+
+</div><!-- /app -->
+
+<!-- ── MORE MENU ── -->
+<div class="modal-overlay" id="more-modal" onclick="toggleMore()">
+  <div class="modal-sheet" onclick="event.stopPropagation()" style="border-radius:20px 20px 0 0">
+    <div class="modal-handle"></div>
+    <div style="padding:16px 20px 20px">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Navigation</div>
+      <button onclick="goPageMob('contrats');toggleMore()" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px"><span style="font-size:20px">📄</span>Contrats & Devis</button>
+      <button onclick="goPageMob('abonnements');toggleMore()" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px"><span style="font-size:20px">📋</span>Abonnements</button>
+      <button onclick="logout();toggleMore()" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,77,77,.06);border:1px solid rgba(255,77,77,.15);border-radius:12px;color:var(--red);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer"><span style="font-size:20px">🚪</span>Déconnexion</button>
+    </div>
+  </div>
+</div>
+
+<!-- PWA TOAST -->
+<div class="pwa-toast" id="pwa-toast">
+  <span style="font-size:26px">📲</span>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700;color:var(--text)">Installer Alma Admin</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px">Accès direct depuis votre écran d'accueil</div>
+  </div>
+  <button class="pwa-toast-btn" onclick="installPWA()">Installer</button>
+  <button class="pwa-close-btn" onclick="document.getElementById('pwa-toast').style.display='none'">×</button>
+</div>
+
+<!-- MODAL NOUVEAU CLIENT -->
+<div class="overlay" id="mNewClient">
+  <div class="modal">
+    <div class="mhead"><h3>Nouveau client</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="frow"><div class="fg"><label>Nom</label><input id="nc-name" type="text" placeholder="Jean Dupont"></div><div class="fg"><label>Activité</label><input id="nc-act" type="text" placeholder="Food truck..."></div></div>
+    <div class="frow"><div class="fg"><label>Email</label><input id="nc-email" type="email" placeholder="email@..."></div><div class="fg"><label>Téléphone</label><input id="nc-phone" type="text" placeholder="06..."></div></div>
+    <div class="frow">
+      <div class="fg"><label>Abonnement</label><select id="nc-type"><option value="monthly">Mensuel — 19€/mois</option><option value="annual">Annuel — 190€/an</option><option value="lifetime">Lifetime — 790€</option></select></div>
+      <div class="fg"><label>Prochain paiement</label><input id="nc-next" type="date"></div>
+    </div>
+    <div class="fg"><label>Clé générée</label><input id="nc-key" type="text" readonly style="font-family:'DM Mono',monospace;color:var(--cyan);font-size:12px;letter-spacing:1px"></div>
+    <div id="nc-err" style="color:var(--red);font-size:12px;display:none;margin-top:6px"></div>
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-cyan" id="nc-sub" onclick="createClient()">Créer</button></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT CLIENT -->
+<div class="overlay" id="mEditClient">
+  <div class="modal">
+    <div class="mhead"><h3>Modifier le client</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="frow"><div class="fg"><label>Nom</label><input id="ec-name" type="text"></div><div class="fg"><label>Activité</label><input id="ec-act" type="text"></div></div>
+    <div class="frow"><div class="fg"><label>Email</label><input id="ec-email" type="email"></div><div class="fg"><label>Téléphone</label><input id="ec-phone" type="text"></div></div>
+    <div class="frow">
+      <div class="fg"><label>Abonnement</label><select id="ec-type"><option value="monthly">Mensuel</option><option value="annual">Annuel</option><option value="lifetime">Lifetime</option></select></div>
+      <div class="fg"><label>Prochain paiement</label><input id="ec-next" type="date"></div>
+    </div>
+    <input type="hidden" id="ec-id">
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-cyan" onclick="saveEdit()">Sauvegarder</button></div>
+  </div>
+</div>
+
+<!-- MODAL CLIENT DETAIL -->
+<div class="overlay" id="mClientDetail">
+  <div class="modal modal-lg">
+    <div class="mhead"><h3 id="cdTitle">Client</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕ Fermer</button></div>
+    <div id="cdBody"></div>
+  </div>
+</div>
+
+<!-- MODAL NOUVEAU TICKET -->
+<div class="overlay" id="mNewTicket">
+  <div class="modal">
+    <div class="mhead"><h3>Nouveau ticket</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="fg"><label>Client</label><select id="tk-client"><option value="">Sélectionner...</option></select></div>
+    <div class="fg"><label>Titre</label><input id="tk-title" type="text" placeholder="Ex: Bug page stock"></div>
+    <div class="fg"><label>Description</label><textarea id="tk-desc" rows="3"></textarea></div>
+    <div class="fg"><label>Priorité</label><select id="tk-prio"><option value="low">🟢 Faible</option><option value="medium" selected>🟡 Moyenne</option><option value="high">🔴 Haute</option></select></div>
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Annuler</button><button class="btn btn-cyan" onclick="createTicket()">Créer</button></div>
+  </div>
+</div>
+
+<!-- MODAL TICKET DETAIL -->
+<div class="overlay" id="mTicketDetail">
+  <div class="modal">
+    <div class="mhead"><h3 id="mtTitle"></h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="msub" id="mtInfo"></div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6" id="mtDesc"></div>
+    <div class="fg"><label>Réponse</label><textarea id="mt-reply" rows="3"></textarea></div>
+    <div class="fg"><label>Statut</label><select id="mt-status"><option value="open">🔴 Ouvert</option><option value="in_progress">🟡 En cours</option><option value="resolved">🟢 Résolu</option></select></div>
+    <input type="hidden" id="mt-id">
+    <div class="mactions"><button class="btn btn-outline" onclick="closeModal()">Fermer</button><button class="btn btn-cyan" onclick="updateTicket()">Mettre à jour</button></div>
+  </div>
+</div>
+
+<!-- MODAL APERCU DOC -->
+<div class="overlay" id="mPreview">
+  <div class="modal modal-lg">
+    <div class="mhead"><h3 id="prevTitle">Aperçu</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-green btn-sm" onclick="openSig()">✍️ Signer</button>
+        <button class="btn btn-outline btn-sm" onclick="printDoc()">🖨️ Imprimer</button>
+        <button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="docpreview" id="prevContent"></div>
+  </div>
+</div>
+
+<!-- MODAL SIGNATURE -->
+<div class="overlay" id="mSign">
+  <div class="modal">
+    <div class="mhead"><h3>✍️ Signature électronique</h3><button class="btn btn-outline btn-sm" onclick="closeModal()">✕</button></div>
+    <div class="msub">Signez dans le cadre ci-dessous.</div>
+    <canvas id="sigCanvas" width="460" height="150"></canvas>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;-webkit-app-region:no-drag">
+      <button class="btn btn-outline" onclick="clearSig()">Effacer</button>
+      <button class="btn btn-cyan" onclick="applySig()">Appliquer</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+const SB_URL = 'https://mpiugnnxpgzlfnltsqxe.supabase.co'
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1waXVnbm54cGd6bGZubHRzcXhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNzM2MjYsImV4cCI6MjA4ODg0OTYyNn0.F-UhZFNQGO2tBboq7Ne5czo-EQ3nHlo7cHFQLOmQeQ0'
+const COLORS = ['#00d4ff','#00ff88','#ffb400','#a855f7','#ff6b6b','#06b6d4']
+const PRICES = {monthly:19, annual:15.83, lifetime:0}
+
+let clients = []
+let tickets = []
+let docs = []
+let curDoc = null
+
+async function api(method, path, body) {
+  const r = await fetch(SB_URL + path, {
+    method,
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY,'Prefer':method==='POST'?'return=representation':''},
+    body: body ? JSON.stringify(body) : undefined
+  })
+  const t = await r.text()
+  return t ? JSON.parse(t) : []
+}
+
+async function init() {
+  try {
+    const data = await api('GET', '/rest/v1/clients?select=*&order=created_at.desc')
+    clients = Array.isArray(data) ? data.filter(c => !c.is_admin) : []
+  } catch(e) { clients = [] }
+
+  // Tickets et docs depuis store Electron
+  try { const v = await localStorage.getItem('alma_tickets'); tickets = v ? JSON.parse(v) : [] } catch(e) { tickets = [] }
+  try { const v = await localStorage.getItem('alma_docs'); docs = v ? JSON.parse(v) : [] } catch(e) { docs = [] }
+
+  renderAll()
+}
+
+function renderAll() {
+  renderClients()
+  renderAlertes()
+  renderTickets()
+  renderRevenus()
+  renderDocs()
+  renderAbonnements()
+  fillSelects()
+  updateBadges()
+}
+
+// ── CLIENTS ───────────────────────────────────────────────
+function renderClients(f = '') {
+  const filtered = clients.filter(c => !f || (c.name||'').toLowerCase().includes(f.toLowerCase()) || (c.activity||'').toLowerCase().includes(f.toLowerCase()))
+  document.getElementById('cCount').textContent = '(' + filtered.length + ')'
+  const actifs = clients.filter(c => c.active).length
+  const mrr = Math.round(clients.filter(c => c.active).reduce((s,c) => s+(PRICES[c.license_type]||0), 0))
+  document.getElementById('sTotal').textContent = clients.length
+  document.getElementById('sActifs').textContent = actifs
+  document.getElementById('sMrr').textContent = mrr + '€'
+  document.getElementById('sSusp').textContent = clients.filter(c => !c.active).length
+  document.getElementById('statsClients').style.display = clients.length ? 'grid' : 'none'
+
+  if(!filtered.length) {
+    document.getElementById('cgrid').innerHTML = ''
+    document.getElementById('cempty').style.display = 'block'
+    return
+  }
+  document.getElementById('cempty').style.display = 'none'
+
+  document.getElementById('cgrid').innerHTML = filtered.map(c => {
+    const color = COLORS[clients.indexOf(c) % COLORS.length]
+    const init = (c.name||'?').slice(0,2).toUpperCase()
+    const tp = c.license_type==='lifetime' ? '<span class="pill p-purple">♾ Lifetime</span>' : c.license_type==='annual' ? '<span class="pill p-ok">📅 Annuel</span>' : '<span class="pill p-cyan">🔄 Mensuel</span>'
+    const sp = c.active ? '<span class="pill p-ok">● Actif</span>' : '<span class="pill p-red">● Suspendu</span>'
+    const days = alertDays(c)
+    const ap = days !== null && days < 0 ? '<span class="pill p-red">⚠️ Expiré</span>' : days !== null && days <= 7 ? '<span class="pill p-warn">⏰ '+days+'j</span>' : ''
+    const tkt = tickets.filter(t => t.cid === c.id && t.status !== 'resolved').length
+    return `<div class="ccard">
+      <div class="ctop">
+        <div class="cavatar" style="background:linear-gradient(135deg,${color},${color}88)">${init}</div>
+        <div><div class="cname">${c.name||'Sans nom'}</div><div class="cact">${c.activity||'—'}</div></div>
+        ${tkt ? '<span class="pill p-red" style="margin-left:auto">🎫 '+tkt+'</span>' : '<div style="margin-left:auto"></div>'}
+      </div>
+      <div class="cmid">${sp}${tp}${ap}</div>
+      <div class="cbot">
+        <button class="btn btn-cyan btn-sm" onclick="openClientDetail('${c.id}')">Ouvrir →</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-outline btn-sm" onclick="openEdit('${c.id}')">✏️</button>
+        <button class="btn ${c.active?'btn-red':'btn-green'} btn-sm" onclick="toggle('${c.id}',${c.active})">${c.active?'⏸':'▶'}</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function filterC() { renderClients(document.getElementById('search').value) }
+
+function alertDays(c) {
+  if(!c.next_payment || c.license_type === 'lifetime') return null
+  return Math.round((new Date(c.next_payment) - new Date()) / 86400000)
+}
+
+function openClientDetail(id) {
+  const c = clients.find(x => x.id === id)
+  if(!c) return
+  const color = COLORS[clients.indexOf(c) % COLORS.length]
+  const init = (c.name||'?').slice(0,2).toUpperCase()
+  const tp = c.license_type==='lifetime' ? '♾ Lifetime' : c.license_type==='annual' ? '📅 Annuel — 190€/an' : '🔄 Mensuel — 19€/mois'
+  const sp = c.active ? '<span class="pill p-ok">● Actif</span>' : '<span class="pill p-red">● Suspendu</span>'
+  const next = c.next_payment ? new Date(c.next_payment).toLocaleDateString('fr-FR') : '—'
+  const appBlock = c.app_file
+    ? `<div style="padding:20px;text-align:center"><div style="font-size:26px;margin-bottom:8px">✅</div><div style="font-weight:600;color:var(--green)">App configurée</div><div style="font-size:12px;color:var(--muted);margin-top:4px">${c.app_file}</div></div>`
+    : `<div style="padding:30px;text-align:center;color:var(--muted)"><div style="font-size:30px;margin-bottom:10px">🛠️</div><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Aucune application configurée</div><div style="font-size:12px">Cliquez sur Configurer pour associer un dashboard.</div></div>`
+  const openBtn = c.app_file
+    ? `<button class="btn btn-cyan btn-sm" onclick="console.log('app:', c.app_file)">Ouvrir l'app →</button>`
+    : ''
+
+  document.getElementById('cdTitle').textContent = c.name || 'Client'
+  document.getElementById('cdBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,${color},${color}88);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#000">${init}</div>
+      <div><div style="font-size:18px;font-weight:800">${c.name}</div><div style="font-size:12px;color:var(--muted)">${c.activity||'—'} · ${c.email||''}</div></div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="closeModal();openEdit('${c.id}')">✏️ Modifier</button>
+        <button class="btn ${c.active?'btn-red':'btn-green'} btn-sm" onclick="toggle('${c.id}',${c.active});closeModal()">${c.active?'⏸ Suspendre':'▶ Réactiver'}</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+      <div style="background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Clé de licence</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--cyan)">${c.license_key||'—'}</div>
+      </div>
+      <div style="background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Abonnement</div>
+        <div style="font-size:13px;font-weight:600">${tp} ${sp}</div>
+      </div>
+      <div style="background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Prochain paiement</div>
+        <div style="font-size:13px;font-weight:600">${next}</div>
+      </div>
+    </div>
+    <div style="background:var(--s3);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600">🖥️ Application client</div>
+        <div style="display:flex;gap:8px">${openBtn}<button class="btn btn-outline btn-sm" onclick="configApp('${c.id}')">⚙️ Configurer</button></div>
+      </div>
+      ${appBlock}
+    </div>
+  `
+  openModal('mClientDetail')
+}
+
+async function configApp(id) {
+  const f = prompt('Nom du fichier dashboard (ex: croquez-moi.html) :')
+  if(!f) return
+  await api('PATCH', '/rest/v1/clients?id=eq.'+id, {app_file: f})
+  await init()
+  closeModal()
+  setTimeout(() => openClientDetail(id), 200)
+}
+
+// ── ALERTES ───────────────────────────────────────────────
+function renderAlertes() {
+  const exp = clients.filter(c => { const d = alertDays(c); return d !== null && d < 0 })
+  const soon = clients.filter(c => { const d = alertDays(c); return d !== null && d >= 0 && d <= 7 })
+  const ok = clients.filter(c => { const d = alertDays(c); return d === null || d > 7 })
+  document.getElementById('aExp').textContent = exp.length
+  document.getElementById('aSoon').textContent = soon.length
+  document.getElementById('aOk').textContent = ok.length
+  const all = [...exp.map(c=>({c,t:'exp'})), ...soon.map(c=>({c,t:'soon'})), ...ok.slice(0,5).map(c=>({c,t:'ok'}))]
+  document.getElementById('alertesList').innerHTML = all.length ? all.map(({c,t}) => {
+    const d = alertDays(c)
+    const cls = t==='exp' ? 'a-exp' : t==='soon' ? 'a-soon' : 'a-ok'
+    const icon = t==='exp' ? '🚨' : t==='soon' ? '⏰' : '✅'
+    const msg = t==='exp' ? `Expiré depuis ${Math.abs(d)} jour(s)` : t==='soon' ? `Renouvellement dans ${d} jour(s)` : `À jour${c.license_type==='lifetime' ? ' — Lifetime' : c.next_payment ? ' — '+new Date(c.next_payment).toLocaleDateString('fr-FR') : ''}`
+    return `<div class="aitem ${cls}"><span style="font-size:22px">${icon}</span><div style="flex:1"><div style="font-size:13px;font-weight:600">${c.name}</div><div style="font-size:11px;opacity:.8;margin-top:2px">${msg}</div></div>${t!=='ok'?`<button class="btn btn-outline btn-sm" onclick="openEdit('${c.id}')">Modifier</button>`:''}</div>`
+  }).join('') : '<div class="empty"><div class="ei">✅</div><div class="et">Tout est à jour !</div></div>'
+}
+
+// ── TICKETS ───────────────────────────────────────────────
+function renderTickets() {
+  document.getElementById('tOpen').textContent = tickets.filter(t=>t.status==='open').length
+  document.getElementById('tProg').textContent = tickets.filter(t=>t.status==='in_progress').length
+  document.getElementById('tDone').textContent = tickets.filter(t=>t.status==='resolved').length
+  document.getElementById('ticketsList').innerHTML = tickets.length ? [...tickets].reverse().map(t => {
+    const c = clients.find(x=>x.id===t.cid)
+    const sp = t.status==='open' ? '<span class="pill p-red">Ouvert</span>' : t.status==='in_progress' ? '<span class="pill p-warn">En cours</span>' : '<span class="pill p-ok">Résolu</span>'
+    const pp = t.prio==='high' ? '<span class="pill p-red">🔴 Haute</span>' : t.prio==='medium' ? '<span class="pill p-warn">🟡 Moyenne</span>' : '<span class="pill p-ok">🟢 Faible</span>'
+    return `<div class="ticket" onclick="openTicket('${t.id}')"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:16px">${t.status==='open'?'🔴':t.status==='in_progress'?'🟡':'🟢'}</span><div style="flex:1;font-size:13px;font-weight:600">${t.title}</div>${sp}${pp}</div><div style="font-size:11px;color:var(--muted)">👤 ${c?c.name:'—'} · ${new Date(t.date).toLocaleDateString('fr-FR')}</div>${t.reply?`<div style="margin-top:8px;padding:8px;background:rgba(0,212,255,.06);border-radius:6px;font-size:12px;color:var(--cyan)">💬 ${t.reply}</div>`:''}</div>`
+  }).join('') : '<div class="empty"><div class="ei">🎫</div><div class="et">Aucun ticket</div></div>'
+}
+
+function createTicket() {
+  const title = document.getElementById('tk-title').value.trim()
+  if(!title) return
+  tickets.push({id:Date.now()+'',cid:document.getElementById('tk-client').value,title,desc:document.getElementById('tk-desc').value,prio:document.getElementById('tk-prio').value,status:'open',date:new Date().toISOString(),reply:''})
+  save(); closeModal(); renderTickets(); updateBadges()
+}
+
+function openTicket(id) {
+  const t = tickets.find(x=>x.id===id); if(!t) return
+  const c = clients.find(x=>x.id===t.cid)
+  document.getElementById('mt-id').value = id
+  document.getElementById('mtTitle').textContent = t.title
+  document.getElementById('mtInfo').textContent = '👤 '+(c?c.name:'—')+' · '+new Date(t.date).toLocaleDateString('fr-FR')
+  document.getElementById('mtDesc').textContent = t.desc
+  document.getElementById('mt-reply').value = t.reply||''
+  document.getElementById('mt-status').value = t.status
+  openModal('mTicketDetail')
+}
+
+function updateTicket() {
+  const id = document.getElementById('mt-id').value
+  const t = tickets.find(x=>x.id===id); if(!t) return
+  t.reply = document.getElementById('mt-reply').value
+  t.status = document.getElementById('mt-status').value
+  save(); closeModal(); renderTickets(); updateBadges()
+}
+
+// ── REVENUS ───────────────────────────────────────────────
+function renderRevenus() {
+  const mrr = clients.filter(c=>c.active).reduce((s,c)=>s+(PRICES[c.license_type]||0),0)
+  const life = clients.filter(c=>c.license_type==='lifetime').length * 790
+  document.getElementById('rMrr').textContent = Math.round(mrr)+'€'
+  document.getElementById('rArr').textContent = Math.round(mrr*12)+'€'
+  document.getElementById('rTotal').textContent = Math.round(mrr*12+life)+'€'
+  document.getElementById('rLife').textContent = life+'€'
+  document.getElementById('revTable').innerHTML = clients.map(c => {
+    const m = PRICES[c.license_type]||0
+    const a = c.license_type==='lifetime'?790:c.license_type==='annual'?190:228
+    const since = c.created_at ? Math.round((Date.now()-new Date(c.created_at))/(86400000*30)) : 0
+    const tot = c.license_type==='lifetime'?790:Math.round(m*since)
+    return `<tr><td style="font-weight:600">${c.name}</td><td style="color:var(--muted)">${c.license_type==='lifetime'?'Lifetime':c.license_type==='annual'?'Annuel':'Mensuel'}</td><td style="font-family:'DM Mono',monospace">${Math.round(m)}€</td><td style="font-family:'DM Mono',monospace;color:var(--green)">${a}€</td><td style="color:var(--muted);font-size:12px">${c.created_at?new Date(c.created_at).toLocaleDateString('fr-FR'):'—'}</td><td style="font-family:'DM Mono',monospace;color:var(--yellow);font-weight:700">${tot}€</td></tr>`
+  }).join('')
+}
+
+// ── CONTRATS ──────────────────────────────────────────────
+function renderDocs() {
+  document.getElementById('docList').innerHTML = docs.length ? docs.map((d,i) => {
+    const c = clients.find(x=>x.id===d.cid)
+    const tp = d.type==='contrat' ? '<span class="pill p-cyan">Contrat</span>' : '<span class="pill p-purple">Devis</span>'
+    const sg = d.sig ? '<span class="pill p-ok">✍️ Signé</span>' : ''
+    return `<div style="background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-app-region:no-drag" onclick="loadDoc(${i})"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span>${d.type==='contrat'?'📝':'📄'}</span><span style="flex:1;font-size:13px;font-weight:600">${d.title||'Sans titre'}</span>${tp}${sg}</div><div style="font-size:11px;color:var(--muted)">${c?c.name:'—'} · ${d.montant?d.montant+'€ · ':''} ${new Date(d.date).toLocaleDateString('fr-FR')}</div></div>`
+  }).join('') : '<div class="empty"><div class="ei">📁</div><div class="et">Aucun document</div></div>'
+  // Remplir select client dans éditeur
+  document.getElementById('docClientSel').innerHTML = '<option value="">Client...</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')
+}
+
+function newDoc(type) {
+  curDoc = {idx:null,type,title:type==='contrat'?'Nouveau contrat':'Nouveau devis',cid:'',montant:'',content:getTemplate(type),date:new Date().toISOString(),sig:null}
+  showEditor()
+}
+
+function loadDoc(i) { curDoc = {...docs[i], idx:i}; showEditor() }
+
+function showEditor() {
+  document.getElementById('edEmpty').style.display = 'none'
+  document.getElementById('edZone').style.display = 'block'
+  document.getElementById('docTitle').value = curDoc.title||''
+  document.getElementById('docType').value = curDoc.type||'contrat'
+  document.getElementById('docClientSel').value = curDoc.cid||''
+  document.getElementById('docMontant').value = curDoc.montant||''
+  document.getElementById('docEd').innerHTML = curDoc.content||''
+}
+
+function saveDoc() {
+  if(!curDoc) return
+  curDoc.title = document.getElementById('docTitle').value
+  curDoc.type = document.getElementById('docType').value
+  curDoc.cid = document.getElementById('docClientSel').value
+  curDoc.montant = document.getElementById('docMontant').value
+  curDoc.content = document.getElementById('docEd').innerHTML
+  if(curDoc.idx !== null) { docs[curDoc.idx] = curDoc } else { curDoc.date = new Date().toISOString(); curDoc.idx = docs.length; docs.push(curDoc) }
+  save(); renderDocs()
+}
+
+function previewDoc() {
+  saveDoc()
+  const c = clients.find(x=>x.id===curDoc.cid)
+  document.getElementById('prevTitle').textContent = curDoc.title||'Document'
+  document.getElementById('prevContent').innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #eee"><div><div style="font-size:20px;font-weight:800">alma.</div><div style="font-size:11px;color:#888">Logiciel de gestion · SIREN 891 139 248</div></div><div style="text-align:right"><div style="font-size:16px;font-weight:700">${curDoc.title}</div><div style="font-size:11px;color:#888">${new Date().toLocaleDateString('fr-FR')}</div>${curDoc.montant?`<div style="font-size:15px;font-weight:700;color:#0077aa;margin-top:4px">${curDoc.montant}€</div>`:''}</div></div>${c?`<div style="margin-bottom:16px;padding:10px;background:#f8f8f8;border-radius:6px"><div style="font-weight:600">${c.name}</div><div style="font-size:12px;color:#666">${c.activity||''}</div></div>`:''}<div>${curDoc.content||''}</div>${curDoc.sig?`<div style="margin-top:30px;padding-top:16px;border-top:1px solid #eee"><div style="font-size:11px;color:#888;margin-bottom:6px">Signature électronique</div><img src="${curDoc.sig}" style="max-height:70px"></div>`:''}`
+  openModal('mPreview')
+}
+
+function printDoc() {
+  const w = window.open('','_blank')
+  w.document.write('<html><head><title>Document</title><style>body{font-family:sans-serif;padding:40px;color:#111}</style></head><body>'+document.getElementById('prevContent').innerHTML+'</body></html>')
+  w.document.close(); w.print()
+}
+
+function getTemplate(type) {
+  const today = new Date().toLocaleDateString('fr-FR')
+  const n = String(docs.length+1).padStart(4,'0')
+  if(type==='contrat') return `<h2 style="margin-bottom:4px">CONTRAT DE PRESTATION DE SERVICES</h2><p style="font-size:11px;color:#888;margin-bottom:16px">Réf : ALMA-CTR-${n} · ${today}</p><hr style="border:none;border-top:1px solid #444;margin:12px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:14px"><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Le Prestataire</p><p><strong>Lucas Fernandez</strong><br>Entrepreneur individuel · Nîmes (30)<br>SIREN : 891 139 248</p></div><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Le Client</p><p><strong>[Nom / Raison sociale]</strong><br>[Adresse]<br>SIREN : [Numéro]</p></div></div><hr style="border:none;border-top:1px solid #444;margin:12px 0"><h3 style="margin:12px 0 6px">Article 1 — Objet</h3><p>Installation, configuration et maintenance du logiciel Alma.</p><h3 style="margin:12px 0 6px">Article 2 — Durée</h3><p>Contrat à durée indéterminée, renouvelable tacitement.</p><h3 style="margin:12px 0 6px">Article 3 — Tarifs</h3><p>Installation : <strong>[MONTANT]€</strong> · Abonnement : <strong>[FORMULE]</strong><br>Pénalités de retard au taux légal en vigueur (art. L.441-10 du Code de commerce).</p><h3 style="margin:12px 0 6px">Article 4 — Propriété intellectuelle</h3><p>Le logiciel Alma reste la propriété exclusive du Prestataire. Droit d'usage personnel, non cessible.</p><h3 style="margin:12px 0 6px">Article 5 — Confidentialité</h3><p>Obligation de confidentialité réciproque pendant toute la durée du contrat et 3 ans après.</p><h3 style="margin:12px 0 6px">Article 6 — RGPD</h3><p>Traitement des données conforme au Règlement (UE) 2016/679. Données non cédées à des tiers.</p><h3 style="margin:12px 0 6px">Article 7 — Résiliation</h3><p>Préavis de 30 jours par écrit. Suspension immédiate en cas de non-paiement après relance.</p><h3 style="margin:12px 0 6px">Article 8 — Responsabilité</h3><p>Responsabilité limitée aux dommages directs, plafonnée aux 3 derniers mois de facturation.</p><h3 style="margin:12px 0 6px">Article 9 — Droit applicable</h3><p>Droit français. Tribunal compétent : Tribunal de Nîmes.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px;padding-top:16px;border-top:1px solid #444"><div><p style="font-size:11px;color:#888">Le Prestataire</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">Lucas Fernandez · Nîmes · ${today}</p></div><div><p style="font-size:11px;color:#888">Le Client — Lu et approuvé</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">[Nom] · [Ville] · [Date]</p></div></div><p style="font-size:10px;color:#888;text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid #333">TVA non applicable — Art. 293B du CGI · SIREN 891 139 248 · Fait à Nîmes en 2 exemplaires</p>`
+  return `<h2 style="margin-bottom:4px">DEVIS</h2><p style="font-size:11px;color:#888;margin-bottom:16px">N° ${n} · ${today} · Valable 30 jours</p><hr style="border:none;border-top:1px solid #444;margin:12px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px"><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Émetteur</p><p><strong>Lucas Fernandez</strong><br>Entrepreneur individuel<br>Nîmes (30) · SIREN 891 139 248</p></div><div><p style="font-size:10px;color:#888;text-transform:uppercase;margin-bottom:6px">Destinataire</p><p><strong>[Nom]</strong><br>[Adresse]<br>SIREN : [Numéro]</p></div></div><table style="width:100%;border-collapse:collapse;margin:12px 0"><tr style="background:#1a1a1f"><th style="padding:8px 10px;text-align:left;border:1px solid #333;font-size:11px">Désignation</th><th style="padding:8px 10px;text-align:center;border:1px solid #333;font-size:11px">Qté</th><th style="padding:8px 10px;text-align:right;border:1px solid #333;font-size:11px">Prix unitaire</th><th style="padding:8px 10px;text-align:right;border:1px solid #333;font-size:11px">Total HT</th></tr><tr><td style="padding:8px 10px;border:1px solid #333">Installation logiciel Alma</td><td style="padding:8px 10px;text-align:center;border:1px solid #333">1</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">380,00€</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">380,00€</td></tr><tr><td style="padding:8px 10px;border:1px solid #333">Abonnement mensuel</td><td style="padding:8px 10px;text-align:center;border:1px solid #333">1</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">19,00€/mois</td><td style="padding:8px 10px;text-align:right;border:1px solid #333">19,00€</td></tr><tr><td colspan="3" style="padding:8px 10px;border:1px solid #333;text-align:right;font-weight:700">TVA non applicable — Art. 293B CGI</td><td style="padding:8px 10px;border:1px solid #333;text-align:right">0,00€</td></tr><tr style="background:#111"><td colspan="3" style="padding:10px;border:1px solid #333;text-align:right;font-weight:800;font-size:14px">TOTAL TTC</td><td style="padding:10px;border:1px solid #333;text-align:right;font-weight:800;font-size:14px;color:#00d4ff">[MONTANT]€</td></tr></table><div style="background:#111;border:1px solid #333;border-radius:6px;padding:10px 12px;margin:12px 0;font-size:12px"><p><strong>Paiement :</strong> Virement bancaire — 30% à la commande, solde à livraison</p><p style="margin-top:4px"><strong>Délai :</strong> [X] jours ouvrés après acceptation</p></div><p style="font-size:11px;color:#888">En cas de retard, pénalités au taux BCE +10 pts + indemnité forfaitaire 40€ (art. D.441-5 C. commerce).<br>Pas d'escompte pour paiement anticipé.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px;padding-top:16px;border-top:1px solid #333"><div><p style="font-size:11px;color:#888">Bon pour accord — Le Client</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">[Nom] · [Date]</p></div><div><p style="font-size:11px;color:#888">Le Prestataire</p><div style="height:50px;border-bottom:1px solid #666;margin-top:20px"></div><p style="font-size:11px;color:#888;margin-top:4px">Lucas Fernandez · ${today}</p></div></div><p style="font-size:10px;color:#888;text-align:center;margin-top:14px;padding-top:10px;border-top:1px solid #333">TVA non applicable — Art. 293B du CGI · SIREN 891 139 248</p>`
+}
+
+function fmt(c) { document.execCommand(c,false,null); document.getElementById('docEd').focus() }
+function ins(t) {
+  const m = {titre:'<h3 style="margin:10px 0 6px">Titre de section</h3>',sep:'<hr style="border:none;border-top:1px solid #444;margin:14px 0"><br>',clause:'<p><strong>Article X —</strong> Rédigez votre clause ici.</p><br>',sig:'<div style="margin-top:30px;padding-top:16px;border-top:1px solid #444"><p>Signature :</p><div style="height:50px;border-bottom:1px solid #666;width:200px;margin-top:16px"></div></div>',tab:'<table style="width:100%;border-collapse:collapse;margin:10px 0"><tr><th style="border:1px solid #444;padding:6px">Col 1</th><th style="border:1px solid #444;padding:6px">Col 2</th><th style="border:1px solid #444;padding:6px">Montant</th></tr><tr><td style="border:1px solid #444;padding:6px">Ligne</td><td style="border:1px solid #444;padding:6px"></td><td style="border:1px solid #444;padding:6px"></td></tr></table>'}
+  document.execCommand('insertHTML',false,m[t]); document.getElementById('docEd').focus()
+}
+
+// ── SIGNATURE ─────────────────────────────────────────────
+let draw=false, sCtx, sLast={}
+function openSig() {
+  closeModal()
+  setTimeout(() => {
+    openModal('mSign')
+    const cv = document.getElementById('sigCanvas')
+    sCtx = cv.getContext('2d')
+    sCtx.clearRect(0,0,cv.width,cv.height)
+    sCtx.strokeStyle='#000'; sCtx.lineWidth=2.5; sCtx.lineCap='round'
+    cv.onmousedown = e => { draw=true; sLast={x:e.offsetX,y:e.offsetY} }
+    cv.onmousemove = e => { if(!draw) return; sCtx.beginPath(); sCtx.moveTo(sLast.x,sLast.y); sCtx.lineTo(e.offsetX,e.offsetY); sCtx.stroke(); sLast={x:e.offsetX,y:e.offsetY} }
+    cv.onmouseup = cv.onmouseleave = () => draw=false
+  }, 150)
+}
+function clearSig() { sCtx.clearRect(0,0,460,150) }
+function applySig() {
+  if(!curDoc) return
+  curDoc.sig = document.getElementById('sigCanvas').toDataURL()
+  if(curDoc.idx!==null) docs[curDoc.idx].sig = curDoc.sig
+  save(); closeModal(); setTimeout(() => openModal('mPreview'),100)
+}
+
+// ── ABONNEMENTS ───────────────────────────────────────────
+function renderAbonnements() {
+  document.getElementById('aboTable').innerHTML = clients.length ? clients.map(c => {
+    const tp = c.license_type==='lifetime'?'<span class="pill p-purple">♾ Lifetime</span>':c.license_type==='annual'?'<span class="pill p-ok">Annuel</span>':'<span class="pill p-cyan">Mensuel</span>'
+    const sp = c.active?'<span class="pill p-ok">Actif</span>':'<span class="pill p-red">Suspendu</span>'
+    const m = c.license_type==='lifetime'?'790€ unique':c.license_type==='annual'?'190€/an':'19€/mois'
+    return `<tr><td style="font-weight:600">${c.name}</td><td style="color:var(--muted);font-size:12px">${c.activity||'—'}</td><td>${tp}</td><td style="font-family:'DM Mono',monospace;color:var(--yellow)">${m}</td><td style="font-size:12px;color:var(--muted)">${c.next_payment?new Date(c.next_payment).toLocaleDateString('fr-FR'):'—'}</td><td>${sp}</td><td style="-webkit-app-region:no-drag"><button class="btn ${c.active?'btn-red':'btn-green'} btn-sm" onclick="toggle('${c.id}',${c.active})">${c.active?'⏸':'▶'}</button></td></tr>`
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Aucun client</td></tr>'
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function fillSelects() {
+  const opts = '<option value="">Sélectionner...</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')
+  document.getElementById('tk-client').innerHTML = opts
+  document.getElementById('docClientSel').innerHTML = '<option value="">Client...</option>' + clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')
+}
+
+function updateBadges() {
+  const o = tickets.filter(t=>t.status==='open').length
+  const e = clients.filter(c=>{ const d=alertDays(c); return d!==null&&d<0 }).length
+  const bt = document.getElementById('badgeTickets'); bt.textContent=o; bt.style.display=o?'block':'none'
+  const ba = document.getElementById('badgeAlertes'); ba.textContent=e; ba.style.display=e?'block':'none'
+}
+
+function save() {
+  localStorage.setItem('alma_tickets', JSON.stringify(tickets))
+  localStorage.setItem('alma_docs', JSON.stringify(docs))
+}
+
+function genKey() {
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s=()=>Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join('')
+  return `ALMA-${s()}-${s()}-${s()}`
+}
+
+async function toggle(id, active) {
+  await api('PATCH', '/rest/v1/clients?id=eq.'+id, {active:!active})
+  await init()
+}
+
+async function createClient() {
+  const name = document.getElementById('nc-name').value.trim()
+  if(!name) { document.getElementById('nc-err').textContent='Nom obligatoire'; document.getElementById('nc-err').style.display='block'; return }
+  const btn = document.getElementById('nc-sub'); btn.disabled=true; btn.textContent='...'
+  try {
+    await api('POST', '/rest/v1/clients', {name, activity:document.getElementById('nc-act').value, email:document.getElementById('nc-email').value, phone:document.getElementById('nc-phone').value, license_key:document.getElementById('nc-key').value, license_type:document.getElementById('nc-type').value, active:true, is_admin:false, next_payment:document.getElementById('nc-next').value||null})
+    closeModal(); await init()
+  } catch(e) { document.getElementById('nc-err').textContent='Erreur: '+e.message; document.getElementById('nc-err').style.display='block' }
+  btn.disabled=false; btn.textContent='Créer'
+}
+
+function openEdit(id) {
+  const c = clients.find(x=>x.id===id); if(!c) return
+  document.getElementById('ec-id').value=c.id
+  document.getElementById('ec-name').value=c.name||''
+  document.getElementById('ec-act').value=c.activity||''
+  document.getElementById('ec-email').value=c.email||''
+  document.getElementById('ec-phone').value=c.phone||''
+  document.getElementById('ec-type').value=c.license_type||'monthly'
+  document.getElementById('ec-next').value=c.next_payment?c.next_payment.slice(0,10):''
+  openModal('mEditClient')
+}
+
+async function saveEdit() {
+  const id = document.getElementById('ec-id').value
+  await api('PATCH', '/rest/v1/clients?id=eq.'+id, {name:document.getElementById('ec-name').value, activity:document.getElementById('ec-act').value, email:document.getElementById('ec-email').value, phone:document.getElementById('ec-phone').value, license_type:document.getElementById('ec-type').value, next_payment:document.getElementById('ec-next').value||null})
+  closeModal(); await init()
+}
+
+function goPage(name, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'))
+  document.getElementById('page-'+name).classList.add('active')
+  if(el) el.classList.add('active')
+  const t = {clients:'Mes clients',alertes:'Alertes paiement',tickets:'Support tickets',revenus:'Revenus',contrats:'Devis & Contrats',abonnements:'Abonnements'}
+  document.getElementById('pageTitle').textContent = t[name]||name
+  const showBtn = name==='clients'
+  document.getElementById('topBtn').style.display = showBtn?'block':'none'
+}
+
+function openModal(id) {
+  if(id==='mNewClient') {
+    document.getElementById('nc-key').value=genKey()
+    ;['nc-name','nc-act','nc-email','nc-phone','nc-next'].forEach(i=>document.getElementById(i).value='')
+    document.getElementById('nc-err').style.display='none'
+  }
+  document.getElementById(id).classList.add('show')
+}
+
+function closeModal() { document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show')) }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal()}))
+
+init()
+
+/* ── MOBILE FUNCTIONS ── */
+function goPageMob(name, el) {
+  // Cacher toutes les pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  var pg = document.getElementById('page-' + name);
+  if(pg) pg.classList.add('active');
+  // Bottom nav
+  document.querySelectorAll('.bn').forEach(b => b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else {
+    var btn = document.getElementById('bn-' + name);
+    if(btn) btn.classList.add('active');
+  }
+  // FAB : montrer seulement sur clients
+  var fab = document.getElementById('fab-btn');
+  if(fab) fab.style.display = name === 'clients' ? 'flex' : 'none';
+}
+
+function goPage(name, el) {
+  // Desktop : sync sidebar
+  document.querySelectorAll('.sd-nav').forEach(n => n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // Appeler goPageMob
+  goPageMob(name, null);
+}
+
+function fabAction() {
+  var active = document.querySelector('.page.active');
+  if(active && active.id === 'page-clients') openNewClient();
+}
+
+function openNewClient() {
+  var m = document.getElementById('modalClient');
+  if(m) { m.classList.add('show'); m.style.display='flex'; }
+}
+
+function toggleMore() {
+  var m = document.getElementById('more-modal');
+  if(m) m.classList.toggle('show');
+  if(m && m.classList.contains('show')) m.style.display='flex';
+  else if(m) setTimeout(function(){ m.style.display='none'; }, 200);
+}
+
+/* Render clients mobile */
+function renderClientsMob(clients) {
+  var el = document.getElementById('clientsListMob');
+  if(!el) return;
+  if(!clients || !clients.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">Aucun client</div><div class="empty-sub">Ajoutez votre premier client</div></div>';
+    return;
+  }
+  el.innerHTML = clients.map(function(c) {
+    var init = (c.nom||c.name||c.email||'?')[0].toUpperCase();
+    var statut = c.statut||c.status||'actif';
+    var statusClass = statut === 'actif' ? 'status-actif' : statut === 'essai' ? 'status-essai' : 'status-expire';
+    var statusLabel = statut === 'actif' ? 'Actif' : statut === 'essai' ? 'Essai' : 'Expiré';
+    var montant = c.montant ? c.montant + '€/mois' : '';
+    return '<div class="client-item" onclick="openClientDetail(\''+c.id+'\')">'+
+      '<div class="client-av">'+init+'</div>'+
+      '<div class="client-info">'+
+        '<div class="client-name">'+(c.nom||c.name||c.email||'—')+'</div>'+
+        '<div class="client-meta">'+(c.email||'')+' · '+(c.activite||c.activity||'')+'</div>'+
+      '</div>'+
+      '<div class="client-right">'+
+        '<div class="client-status '+statusClass+'">'+statusLabel+'</div>'+
+        '<div class="client-amount">'+montant+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+/* Override renderClients pour appeler aussi renderClientsMob */
+var _origRenderClients = renderClients;
+function renderClients() {
+  _origRenderClients();
+  // Sync mobile list
+  setTimeout(function(){
+    var rows = document.querySelectorAll('[data-cid]');
+    var mobs = [];
+    rows.forEach(function(r){
+      mobs.push({
+        id: r.getAttribute('data-cid'),
+        nom: r.querySelector('.c-name')?r.querySelector('.c-name').textContent:'',
+        email: r.querySelector('.c-email')?r.querySelector('.c-email').textContent:'',
+        statut: r.getAttribute('data-statut')||'actif',
+        activite: r.querySelector('.c-activite')?r.querySelector('.c-activite').textContent:'',
+        montant: r.getAttribute('data-montant')||''
+      });
+    });
+    renderClientsMob(mobs);
+  }, 100);
+}
+
+/* PWA */
+var _pwa = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault(); _pwa = e;
+  if(window.innerWidth <= 768) document.getElementById('pwa-toast').style.display = 'flex';
+});
+function installPWA(){
+  if(!_pwa) return;
+  _pwa.prompt();
+  _pwa.userChoice.then(function(){ _pwa=null; document.getElementById('pwa-toast').style.display='none'; });
+}
+window.addEventListener('appinstalled', function(){
+  document.getElementById('pwa-toast').style.display='none';
+});
+
+/* SW */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw-admin.js').catch(function(){}); });
+}
+
+/* Sync badges bottom nav */
+function syncBadgesMob(){
+  var a = document.getElementById('badgeAlertes');
+  var ma = document.getElementById('mob-badge-alertes');
+  if(a && ma){ var t=a.textContent.trim(); ma.textContent=t; ma.style.display=t?'flex':'none'; }
+  var k = document.getElementById('badgeTickets');
+  var mk = document.getElementById('mob-badge-tickets');
+  if(k && mk){ var t2=k.textContent.trim(); mk.textContent=t2; mk.style.display=t2?'flex':'none'; }
+  // Notif dot
+  var nd = document.getElementById('notifDot');
+  if(nd && a) nd.style.display = a.textContent.trim() ? 'block' : 'none';
+}
+setInterval(syncBadgesMob, 3000);
+
+</script>
+</body>
+</html>
