@@ -96,11 +96,6 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:-apple-sys
 <div class="ov" id="ov" onclick="closeAll()"></div>
 <div class="toast" id="toast"></div>
 
-<div id="loading" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
-  <div style="width:28px;height:28px;border:3px solid rgba(255,107,43,.2);border-top-color:var(--sf);border-radius:50%;animation:spin .8s linear infinite"></div>
-  <div style="font-size:12px;color:var(--m)">Synchronisation...</div>
-</div>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 <div class="app">
   <div class="top">
     <div class="top-inner">
@@ -183,460 +178,403 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:-apple-sys
 </div>
 
 <script>
-const SB_URL = 'https://mpiugnnxpgzlfnltsqxe.supabase.co'
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1waXVnbm54cGd6bGZubHRzcXhlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzI3MzYyNiwiZXhwIjoyMDg4ODQ5NjI2fQ.nXhagaf3dIwH_LGs8-Ny6qmH2HfoNnyjfSvbxZETAqo'
-const CLIENT_ID = 'bf2340d7-6b0a-4161-9207-4e07af71d895'
+var W='sf', TAB='dashboard'
 
-var W = 'sf', TAB = 'dashboard'
-var SF = {products:[], history:[], nextId:1}
-var CM = {products:[], history:[], nextId:1}
-var KM_DATA = []
-var EMPS_SF = []
-var EMPS_CM = []
+var TABS_SF=['dashboard','boissons','alimentaire','consommables','marge','historique','stats','employes']
+var TABS_CM=['dashboard','alimentaire','consommables','marge','kilometrique','historique','stats','employes']
+var LABELS={dashboard:'Dashboard',boissons:'Boissons',alimentaire:'Alim.',consommables:'Conso.',marge:'Marge',historique:'Historique',stats:'Stats',employes:'Employes',kilometrique:'KM'}
 
-var TABS_SF = ['dashboard','boissons','alimentaire','consommables','marge','historique','stats','employes']
-var TABS_CM = ['dashboard','alimentaire','consommables','marge','kilometrique','historique','stats','employes']
-var LABELS = {dashboard:'Dashboard',boissons:'Boissons',alimentaire:'Alimentaire',consommables:'Conso.',marge:'Marge',historique:'Historique',stats:'Stats',employes:'Employes',kilometrique:'KM'}
+function ld(k,d){try{var v=localStorage.getItem(k);if(v)return JSON.parse(v)}catch(e){}return d}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function getSF(){return ld('sf_inv_v4',{products:[],history:[],nextId:1})}
+function getCM(){return ld('cm_inv_v1',{products:[],history:[],nextId:1})}
+function saveSF(d){sv('sf_inv_v4',d)}
+function saveCM(d){sv('cm_inv_v1',d)}
+function getKM(){return ld('cm_km',[])}
+function getEmps(w){return ld(w==='sf'?'emp_sf':'emp_cm',[])}
+function D(){return W==='sf'?getSF():getCM()}
+function ac(){return W==='sf'?'var(--sf)':'var(--cm)'}
+function bc(){return W==='sf'?'btn-sf':'btn-cm'}
 
-// ── API SUPABASE ──
-async function api(method, path, body) {
-  var r = await fetch(SB_URL + path, {
-    method: method,
-    headers: {'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY,'Prefer':method==='POST'?'return=representation':''},
-    body: body ? JSON.stringify(body) : undefined
-  })
-  var t = await r.text()
-  return t ? JSON.parse(t) : []
+function fe(n){return Math.round(n||0)+' \u20ac'}
+function fe2(n){return (n||0).toFixed(2)+' \u20ac'}
+
+function sw(w){
+  W=w;TAB='dashboard'
+  document.getElementById('b-sf').className='w-btn'+(w==='sf'?' on-sf':'')
+  document.getElementById('b-cm').className='w-btn'+(w==='cm'?' on-cm':'')
+  renderTabs();renderPage()
 }
 
-// ── CHARGER DONNÉES DEPUIS SUPABASE ──
-async function loadAll() {
-  showLoading(true)
-  try {
-    // Charger SF
-    var resSF = await api('GET', '/rest/v1/food_inventory?client_id=eq.'+CLIENT_ID+'&world=eq.sf&select=*')
-    if (resSF && resSF.length) SF = resSF[0]
-    else { SF = {products:[], history:[], nextId:1}; await createInv('sf') }
-
-    // Charger CM
-    var resCM = await api('GET', '/rest/v1/food_inventory?client_id=eq.'+CLIENT_ID+'&world=eq.cm&select=*')
-    if (resCM && resCM.length) CM = resCM[0]
-    else { CM = {products:[], history:[], nextId:1}; await createInv('cm') }
-
-    // Charger KM
-    var resKM = await api('GET', '/rest/v1/food_km?client_id=eq.'+CLIENT_ID+'&select=*')
-    if (resKM && resKM.length) KM_DATA = resKM[0].trajets || []
-    else { KM_DATA = []; await createKm() }
-
-    // Charger Employés
-    var resEmpSF = await api('GET', '/rest/v1/food_employes?client_id=eq.'+CLIENT_ID+'&world=eq.sf&select=*')
-    if (resEmpSF && resEmpSF.length) EMPS_SF = resEmpSF[0].employes || []
-
-    var resEmpCM = await api('GET', '/rest/v1/food_employes?client_id=eq.'+CLIENT_ID+'&world=eq.cm&select=*')
-    if (resEmpCM && resEmpCM.length) EMPS_CM = resEmpCM[0].employes || []
-
-  } catch(e) {
-    toast2('Erreur connexion : ' + e.message, 'err')
-  }
-  showLoading(false)
-  renderPage()
-}
-
-async function createInv(world) {
-  await api('POST', '/rest/v1/food_inventory', {client_id:CLIENT_ID, world:world, products:[], history:[]})
-}
-async function createKm() {
-  await api('POST', '/rest/v1/food_km', {client_id:CLIENT_ID, trajets:[]})
-}
-
-// ── SAUVEGARDER VERS SUPABASE ──
-async function saveWorld(world) {
-  var d = world === 'sf' ? SF : CM
-  await api('PATCH', '/rest/v1/food_inventory?client_id=eq.'+CLIENT_ID+'&world=eq.'+world, {
-    products: d.products,
-    history: d.history,
-    updated_at: new Date().toISOString()
-  })
-  // Aussi sauvegarder en localStorage comme backup
-  localStorage.setItem(world==='sf'?'sf_inv_v4':'cm_inv_v1', JSON.stringify(d))
-}
-
-async function saveKmData() {
-  await api('PATCH', '/rest/v1/food_km?client_id=eq.'+CLIENT_ID, {
-    trajets: KM_DATA,
-    updated_at: new Date().toISOString()
-  })
-  localStorage.setItem('cm_km', JSON.stringify(KM_DATA))
-}
-
-// ── GETTERS ──
-function D() { return W === 'sf' ? SF : CM }
-function ac() { return W === 'sf' ? 'var(--sf)' : 'var(--cm)' }
-function bc() { return W === 'sf' ? 'btn-sf' : 'btn-cm' }
-function getEmps(w) { return w === 'sf' ? EMPS_SF : EMPS_CM }
-function getKM() { return KM_DATA }
-
-function fe(n) { return Math.round(n||0) + ' €' }
-function fe2(n) { return (n||0).toFixed(2) + ' €' }
-
-function showLoading(show) {
-  var el = document.getElementById('loading')
-  if (el) el.style.display = show ? 'flex' : 'none'
-}
-
-// ── NAVIGATION ──
-function sw(w) {
-  W = w; TAB = 'dashboard'
-  document.getElementById('b-sf').className = 'w-btn' + (w==='sf' ? ' on-sf' : '')
-  document.getElementById('b-cm').className = 'w-btn' + (w==='cm' ? ' on-cm' : '')
-  renderTabs(); renderPage()
-}
-
-function renderTabs() {
-  var tabs = W === 'sf' ? TABS_SF : TABS_CM
-  document.getElementById('tabs').innerHTML = tabs.map(function(t) {
-    return '<button class="tab' + (t===TAB?' a-'+W:'') + '" onclick="gt(''+t+'')">' + (LABELS[t]||t) + '</button>'
+function renderTabs(){
+  var tabs=W==='sf'?TABS_SF:TABS_CM
+  document.getElementById('tabs').innerHTML=tabs.map(function(t){
+    return '<button class="tab'+(t===TAB?' a-'+W:'')+'" onclick="gt(\''+t+'\')">'+(LABELS[t]||t)+'</button>'
   }).join('')
 }
 
-function gt(t) { TAB = t; renderTabs(); renderPage() }
+function gt(t){TAB=t;renderTabs();renderPage()}
 
-function renderPage() {
-  if (TAB==='dashboard') rDash()
-  else if (TAB==='boissons'||TAB==='alimentaire'||TAB==='consommables') rCat(TAB)
-  else if (TAB==='marge') rMarge()
-  else if (TAB==='historique') rHist()
-  else if (TAB==='stats') rStats()
-  else if (TAB==='employes') rEmps()
-  else if (TAB==='kilometrique') rKm()
+function renderPage(){
+  if(TAB==='dashboard')rDash()
+  else if(TAB==='boissons'||TAB==='alimentaire'||TAB==='consommables')rCat(TAB)
+  else if(TAB==='marge')rMarge()
+  else if(TAB==='historique')rHist()
+  else if(TAB==='stats')rStats()
+  else if(TAB==='employes')rEmps()
+  else if(TAB==='kilometrique')rKm()
 }
 
-function set(h) { document.getElementById('page').innerHTML = h }
+function set(h){document.getElementById('page').innerHTML=h}
 
-// ── DASHBOARD ──
-function rDash() {
-  var d = D(), h = d.history || [], p = d.products || []
-  var today = new Date().toDateString()
-  var m = new Date().getMonth(), y = new Date().getFullYear()
-  var hier = new Date(); hier.setDate(hier.getDate()-1); var hierStr = hier.toDateString()
+function rDash(){
+  var d=D(),h=d.history||[],p=d.products||[]
+  var today=new Date().toDateString()
+  var m=new Date().getMonth(),y=new Date().getFullYear()
+  var hier=new Date();hier.setDate(hier.getDate()-1);var hierStr=hier.toDateString()
 
-  var caJ = h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today}).reduce(function(s,x){return s+(x.total||0)},0)
-  var caH = h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===hierStr}).reduce(function(s,x){return s+(x.total||0)},0)
-  var caM = h.filter(function(x){return x.type==='vente'&&new Date(x.date).getMonth()===m&&new Date(x.date).getFullYear()===y}).reduce(function(s,x){return s+(x.total||0)},0)
-  var caT = h.filter(function(x){return x.type==='vente'}).reduce(function(s,x){return s+(x.total||0)},0)
-  var nbJ = h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today}).length
-  var nbM = h.filter(function(x){return x.type==='vente'&&new Date(x.date).getMonth()===m&&new Date(x.date).getFullYear()===y}).length
-  var vStock = p.reduce(function(s,x){return s+(x.stock||0)*(x.prixAchat||0)},0)
-  var vStockVente = p.reduce(function(s,x){return s+(x.stock||0)*(x.prixVente||0)},0)
-  var alts = p.filter(function(x){return x.stock<=(x.warn||0)})
-  var dangers = p.filter(function(x){return x.stock<=(x.danger||0)})
-  var acv = ac()
+  // Calculs CA
+  var caJ=h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today}).reduce(function(s,x){return s+(x.total||0)},0)
+  var caH=h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===hierStr}).reduce(function(s,x){return s+(x.total||0)},0)
+  var caM=h.filter(function(x){return x.type==='vente'&&new Date(x.date).getMonth()===m&&new Date(x.date).getFullYear()===y}).reduce(function(s,x){return s+(x.total||0)},0)
+  var caT=h.filter(function(x){return x.type==='vente'}).reduce(function(s,x){return s+(x.total||0)},0)
+  var nbJ=h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today}).length
+  var nbM=h.filter(function(x){return x.type==='vente'&&new Date(x.date).getMonth()===m&&new Date(x.date).getFullYear()===y}).length
 
-  var tendance = caH > 0 ? Math.round(((caJ-caH)/caH)*100) : 0
-  var tendCol = tendance >= 0 ? 'var(--ok)' : 'var(--err)'
-  var tendSigne = tendance >= 0 ? '+' : ''
+  // Stock
+  var vStock=p.reduce(function(s,x){return s+(x.stock||0)*(x.prixAchat||0)},0)
+  var vStockVente=p.reduce(function(s,x){return s+(x.stock||0)*(x.prixVente||0)},0)
+  var alts=p.filter(function(x){return x.stock<=(x.warn||0)})
+  var dangers=p.filter(function(x){return x.stock<=(x.danger||0)})
+  var acv=ac()
 
-  var ventesJ = h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today})
-  var totalsJ = {}
+  // Tendance CA (compare a hier)
+  var tendance=caH>0?Math.round(((caJ-caH)/caH)*100):0
+  var tendCol=tendance>=0?'var(--ok)':'var(--err)'
+  var tendSigne=tendance>=0?'+':''
+
+  // Top produit du jour
+  var ventesJ=h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today})
+  var totalsJ={}
   ventesJ.forEach(function(x){totalsJ[x.produit||x.nom||'?']=(totalsJ[x.produit||x.nom||'?']||0)+(x.total||0)})
-  var topJ = Object.entries(totalsJ).sort(function(a,b){return b[1]-a[1]})[0]
+  var topJ=Object.entries(totalsJ).sort(function(a,b){return b[1]-a[1]})[0]
 
-  var html = ''
-  html += '<div style="background:var(--s1);border:1px solid var(--b);border-radius:14px;padding:18px;margin-bottom:10px;text-align:center">'
+  var html=''
+
+  // -- HERO : CA DU JOUR --
+  html+='<div style="background:var(--s1);border:1px solid var(--b);border-radius:14px;padding:18px;margin-bottom:10px;text-align:center">'
   +'<div style="font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">CA du jour</div>'
   +'<div style="font-size:38px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ok)">'+fe(caJ)+'</div>'
   +(caH>0?'<div style="font-size:12px;color:'+tendCol+';margin-top:4px">'+tendSigne+tendance+'% vs hier ('+fe(caH)+')</div>':'')
   +(topJ?'<div style="font-size:12px;color:var(--m);margin-top:4px">Top : '+topJ[0]+' · '+fe(topJ[1])+'</div>':'')
   +'</div>'
 
-  html += '<div class="kpi-g" style="grid-template-columns:repeat(2,1fr);margin-bottom:10px">'
+  // -- KPI GRID --
+  html+='<div class="kpi-g" style="grid-template-columns:repeat(2,1fr);margin-bottom:10px">'
   +'<div class="kpi"><div class="kpi-l">CA Ce mois</div><div class="kpi-v" style="color:'+acv+'">'+fe(caM)+'</div><div style="font-size:11px;color:var(--m);margin-top:2px">'+nbM+' ventes</div></div>'
   +'<div class="kpi"><div class="kpi-l">CA Total</div><div class="kpi-v" style="color:'+acv+'">'+fe(caT)+'</div><div style="font-size:11px;color:var(--m);margin-top:2px">'+h.filter(function(x){return x.type==='vente'}).length+' ventes</div></div>'
   +'<div class="kpi"><div class="kpi-l">Stock (cout)</div><div class="kpi-v" style="color:var(--warn)">'+fe(vStock)+'</div></div>'
   +'<div class="kpi"><div class="kpi-l">Marge potentielle</div><div class="kpi-v" style="color:var(--ok)">'+fe(vStockVente-vStock)+'</div></div>'
   +'</div>'
 
-  var ventesJour = h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today}).slice().reverse()
-  html += '<div class="sec"><div class="sec-h"><span class="sec-t">Ventes du jour ('+nbJ+')</span></div>'
-  if (!ventesJour.length) { html += '<div class="empty">Aucune vente ce jour</div>' }
-  else html += ventesJour.slice(0,6).map(function(x){
+  // -- VENTES DU JOUR --
+  var ventesJour=h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===today}).slice().reverse()
+  html+='<div class="sec"><div class="sec-h"><span class="sec-t">Ventes du jour ('+nbJ+')</span></div>'
+  if(!ventesJour.length){html+='<div class="empty">Aucune vente ce jour</div>'}
+  else html+=ventesJour.slice(0,6).map(function(x){
     return '<div class="row"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+(x.produit||x.nom||'-')+'</div><div style="font-size:11px;color:var(--m)">'+x.qty+' '+(x.unit||'')+(x.cat?' · '+x.cat:'')+'</div></div><div style="font-weight:700;color:var(--ok)">+'+fe(x.total||0)+'</div></div>'
   }).join('')
-  if (ventesJour.length > 6) html += '<div style="padding:10px 14px;text-align:center;font-size:12px;color:var(--m)">+'+(ventesJour.length-6)+' autres ventes</div>'
-  html += '</div>'
+  if(ventesJour.length>6)html+='<div style="padding:10px 14px;text-align:center;font-size:12px;color:var(--m)">+'+( ventesJour.length-6)+' autres ventes</div>'
+  html+='</div>'
 
-  if (alts.length) {
-    html += '<div class="sec"><div class="sec-h" style="'+(dangers.length?'border-left:3px solid var(--err);':'border-left:3px solid var(--warn);')+'padding-left:11px"><span class="sec-t">Alertes stock ('+alts.length+')</span>'+(dangers.length?'<span style="font-size:10px;font-weight:700;background:rgba(239,68,68,.15);color:var(--err);padding:3px 8px;border-radius:6px">'+dangers.length+' URGENT</span>':'')+'</div>'
-    html += alts.map(function(x){
-      var isDanger = x.stock <= (x.danger||0)
-      var c = isDanger ? 'var(--err)' : 'var(--warn)'
-      var pct = x.warn ? Math.max(5, Math.round((x.stock/x.warn)*100)) : 10
-      return '<div class="row" onclick="openS('+x.id+')" style="cursor:pointer"><div style="width:6px;height:36px;border-radius:3px;background:'+c+';flex-shrink:0"></div><div style="flex:1;margin-left:8px"><div style="font-size:13px;font-weight:600">'+x.nom+'</div><div style="font-size:11px;color:var(--m)">'+x.cat+' · seuil : '+x.warn+'</div><div class="bar-bg" style="margin-top:4px"><div class="bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div></div><div style="text-align:right;flex-shrink:0"><div style="font-size:22px;font-weight:800;color:'+c+'">'+x.stock+'</div><div style="font-size:10px;color:var(--m)">'+(x.unit||'')+'</div></div></div>'
+  // -- ALERTES STOCK --
+  if(alts.length){
+    html+='<div class="sec"><div class="sec-h" style="'+(dangers.length?'border-left:3px solid var(--err);':'border-left:3px solid var(--warn);')+'padding-left:11px"><span class="sec-t">Alertes stock ('+alts.length+')</span>'
+    +(dangers.length?'<span style="font-size:10px;font-weight:700;background:rgba(239,68,68,.15);color:var(--err);padding:3px 8px;border-radius:6px">'+dangers.length+' URGENT</span>':'')
+    +'</div>'
+    html+=alts.map(function(x){
+      var isDanger=x.stock<=(x.danger||0)
+      var c=isDanger?'var(--err)':'var(--warn)'
+      var pct=x.warn?Math.max(5,Math.round((x.stock/x.warn)*100)):10
+      return '<div class="row" onclick="openS('+x.id+')" style="cursor:pointer">'
+      +'<div style="width:6px;height:36px;border-radius:3px;background:'+c+';flex-shrink:0"></div>'
+      +'<div style="flex:1;margin-left:8px"><div style="font-size:13px;font-weight:600">'+x.nom+'</div>'
+      +'<div style="font-size:11px;color:var(--m)">'+x.cat+' · seuil : '+x.warn+'</div>'
+      +'<div class="bar-bg" style="margin-top:4px"><div class="bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div>'
+      +'</div>'
+      +'<div style="text-align:right;flex-shrink:0">'
+      +'<div style="font-size:22px;font-weight:800;color:'+c+'">'+x.stock+'</div>'
+      +'<div style="font-size:10px;color:var(--m)">'+(x.unit||'')+'</div>'
+      +'</div></div>'
     }).join('')
-    html += '</div>'
+    html+='</div>'
   } else {
-    html += '<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:14px;text-align:center;margin-bottom:10px"><div style="font-size:18px;margin-bottom:4px">&#9989;</div><div style="font-size:13px;font-weight:600;color:var(--ok)">Stock OK</div><div style="font-size:11px;color:var(--m);margin-top:2px">'+p.length+' produits - aucune alerte</div></div>'
+    html+='<div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:14px;text-align:center;margin-bottom:10px">'
+    +'<div style="font-size:18px;margin-bottom:4px">&#9989;</div>'
+    +'<div style="font-size:13px;font-weight:600;color:var(--ok)">Stock OK</div>'
+    +'<div style="font-size:11px;color:var(--m);margin-top:2px">'+p.length+' produits — aucune alerte</div>'
+    +'</div>'
   }
 
-  var semaine = []
-  for (var i=6;i>=0;i--) { var dd=new Date();dd.setDate(dd.getDate()-i);semaine.push({str:dd.toDateString(),label:['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][dd.getDay()]}) }
-  var maxCA = 0
-  var caParJour = semaine.map(function(j){
-    var ca = h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===j.str}).reduce(function(s,x){return s+(x.total||0)},0)
-    if (ca > maxCA) maxCA = ca
-    return {label:j.label, ca:ca, isToday:j.str===today}
+  // -- 7 DERNIERS JOURS --
+  var semaine=[]
+  for(var i=6;i>=0;i--){var dd=new Date();dd.setDate(dd.getDate()-i);semaine.push({date:dd,str:dd.toDateString(),label:['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][dd.getDay()]})}
+  var maxCA=0
+  var caParJour=semaine.map(function(j){
+    var ca=h.filter(function(x){return x.type==='vente'&&new Date(x.date).toDateString()===j.str}).reduce(function(s,x){return s+(x.total||0)},0)
+    if(ca>maxCA)maxCA=ca
+    return {label:j.label,ca:ca,isToday:j.str===today}
   })
-  html += '<div class="sec"><div class="sec-h"><span class="sec-t">7 derniers jours</span></div><div style="padding:14px;display:flex;align-items:flex-end;gap:6px;height:80px">'
-  html += caParJour.map(function(j){
-    var pct = maxCA > 0 ? Math.max(5, Math.round((j.ca/maxCA)*100)) : 5
-    var c = j.isToday ? acv : 'rgba(255,255,255,.15)'
-    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="width:100%;height:'+(pct*0.5)+'px;background:'+c+';border-radius:4px 4px 0 0;min-height:4px"></div><div style="font-size:9px;color:'+(j.isToday?acv:'var(--m)')+'">'+j.label+'</div></div>'
+
+  html+='<div class="sec"><div class="sec-h"><span class="sec-t">7 derniers jours</span></div>'
+  html+='<div style="padding:14px;display:flex;align-items:flex-end;gap:6px;height:80px">'
+  html+=caParJour.map(function(j){
+    var pct=maxCA>0?Math.max(5,Math.round((j.ca/maxCA)*100)):5
+    var c=j.isToday?acv:'rgba(255,255,255,.2)'
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">'
+    +'<div style="width:100%;height:'+(pct*0.5)+'px;background:'+c+';border-radius:4px 4px 0 0;min-height:4px"></div>'
+    +'<div style="font-size:9px;color:'+(j.isToday?acv:'var(--m)')+'">'+j.label+'</div>'
+    +'</div>'
   }).join('')
-  html += '</div></div>'
+  html+='</div></div>'
+
   set(html)
 }
 
-// ── CATÉGORIE ──
-function rCat(cat, search) {
-  var d = D(), p = (d.products||[]).filter(function(x){
-    if (x.cat !== cat) return false
-    if (search) return (x.nom||'').toLowerCase().includes(search.toLowerCase())
+function rCat(cat,search){
+  var d=D(),p=(d.products||[]).filter(function(x){
+    if(x.cat!==cat)return false
+    if(search)return(x.nom||'').toLowerCase().includes(search.toLowerCase())
     return true
   })
-  var acv = ac(), bcc = bc()
-  var html = '<div style="display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:8px 12px;margin-bottom:12px"><span style="color:var(--m);font-size:14px">&#128269;</span><input type="text" placeholder="Rechercher..." oninput="rCat(''+cat+'',this.value)" style="flex:1;background:transparent;border:none;color:var(--t);font-size:16px;font-family:inherit;outline:none"/></div>'
-  html += '<div class="sec">'
-  if (!p.length) { html += '<div class="empty">Aucun produit</div>' }
-  else html += p.map(function(x){
-    var c = x.stock<=(x.danger||0)?'var(--err)':x.stock<=(x.warn||0)?'var(--warn)':'var(--ok)'
-    var pct = x.stock&&(x.warn||0)>0?Math.min(100,x.stock/((x.warn||1)*3)*100):x.stock>0?80:5
-    return '<div class="row"><div style="width:36px;flex-shrink:0"><div style="font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;color:'+c+'">'+x.stock+'</div><div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div></div><div style="flex:1;min-width:0;margin-left:4px"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+x.nom+'</div><div style="font-size:11px;color:var(--m)">'+(x.prixVente?fe2(x.prixVente)+' / '+(x.unit||'u'):(x.unit||''))+'</div></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="sm-btn" style="background:rgba(34,197,94,.15);color:var(--ok)" onclick="openV('+x.id+')">Vente</button><button class="sm-btn" style="background:rgba(255,255,255,.08);color:var(--m2)" onclick="openS('+x.id+')">Stock</button><button class="sm-btn" style="background:rgba(255,255,255,.08);color:var(--m2)" onclick="openP(''+cat+'','+x.id+')">Edit</button></div></div>'
+  var acv=ac(),bcc=bc()
+  var html='<div style="display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:8px 12px;margin-bottom:12px">'
+  +'<span style="color:var(--m);font-size:14px">&#128269;</span>'
+  +'<input type="text" placeholder="Rechercher..." oninput="rCat(\''+cat+'\',this.value)" style="flex:1;background:transparent;border:none;color:var(--t);font-size:16px;font-family:inherit;outline:none"/></div>'
+  html+='<div class="sec">'
+  if(!p.length){html+='<div class="empty">Aucun produit</div>'}
+  else html+=p.map(function(x){
+    var c=x.stock<=(x.danger||0)?'var(--err)':x.stock<=(x.warn||0)?'var(--warn)':'var(--ok)'
+    var pct=x.stock&&(x.warn||0)>0?Math.min(100,x.stock/((x.warn||1)*3)*100):x.stock>0?80:5
+    return '<div class="row"><div style="width:36px;flex-shrink:0">'
+    +'<div style="font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;color:'+c+'">'+x.stock+'</div>'
+    +'<div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div>'
+    +'</div>'
+    +'<div style="flex:1;min-width:0;margin-left:4px"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+x.nom+'</div>'
+    +'<div style="font-size:11px;color:var(--m)">'+(x.prixVente?fe2(x.prixVente)+' / '+(x.unit||'u'):(x.unit||''))+'</div></div>'
+    +'<div style="display:flex;gap:4px;flex-shrink:0">'
+    +'<button class="sm-btn" style="background:rgba(34,197,94,.15);color:var(--ok)" onclick="openV('+x.id+')">Vente</button>'
+    +'<button class="sm-btn" style="background:rgba(255,255,255,.08);color:var(--m2)" onclick="openS('+x.id+')">Stock</button>'
+    +'<button class="sm-btn" style="background:rgba(255,255,255,.08);color:var(--m2)" onclick="openP(\''+cat+'\','+x.id+')">Edit</button>'
+    +'</div></div>'
   }).join('')
-  html += '</div>'
-  html += '<button class="btn '+bcc+' btn-w" onclick="openP(''+cat+'',null)">+ Ajouter</button>'
+  html+='</div>'
+  html+='<button class="btn '+bcc+' btn-w" onclick="openP(\''+cat+'\',null)">+ Ajouter</button>'
   set(html)
 }
 
-// ── MARGE ──
-function rMarge() {
-  var d = D(), p = (d.products||[]).filter(function(x){return x.prixAchat&&x.prixVente})
-  var cout = p.reduce(function(s,x){return s+(x.stock||0)*(x.prixAchat||0)},0)
-  var vente = p.reduce(function(s,x){return s+(x.stock||0)*(x.prixVente||0)},0)
-  var acv = ac()
-  var html = '<div class="kpi-g"><div class="kpi"><div class="kpi-l">Stock cout</div><div class="kpi-v" style="color:var(--warn)">'+fe(cout)+'</div></div><div class="kpi"><div class="kpi-l">Stock vente</div><div class="kpi-v" style="color:var(--ok)">'+fe(vente)+'</div></div><div class="kpi" style="grid-column:1/-1"><div class="kpi-l">Marge potentielle</div><div class="kpi-v" style="color:'+acv+'">'+fe(vente-cout)+'</div></div></div>'
-  html += '<div class="sec"><div class="sec-h"><span class="sec-t">Par produit</span></div>'
-  if (!p.length) { html += '<div class="empty">Definissez les prix sur desktop</div>' }
-  else html += p.map(function(x){
-    var m = ((x.prixVente||0)-(x.prixAchat||0))*(x.stock||0)
-    var pct = x.prixVente?Math.round(((x.prixVente-x.prixAchat)/x.prixVente)*100):0
-    var c = pct>=40?'var(--ok)':pct>=20?'var(--warn)':'var(--err)'
+function rMarge(){
+  var d=D(),p=(d.products||[]).filter(function(x){return x.prixAchat&&x.prixVente})
+  var cout=p.reduce(function(s,x){return s+(x.stock||0)*(x.prixAchat||0)},0)
+  var vente=p.reduce(function(s,x){return s+(x.stock||0)*(x.prixVente||0)},0)
+  var acv=ac()
+  var html='<div class="kpi-g">'
+  +'<div class="kpi"><div class="kpi-l">Stock cout</div><div class="kpi-v" style="color:var(--warn)">'+fe(cout)+'</div></div>'
+  +'<div class="kpi"><div class="kpi-l">Stock vente</div><div class="kpi-v" style="color:var(--ok)">'+fe(vente)+'</div></div>'
+  +'<div class="kpi" style="grid-column:1/-1"><div class="kpi-l">Marge potentielle</div><div class="kpi-v" style="color:'+acv+'">'+fe(vente-cout)+'</div></div>'
+  +'</div>'
+  html+='<div class="sec"><div class="sec-h"><span class="sec-t">Par produit</span></div>'
+  if(!p.length){html+='<div class="empty">Definissez les prix sur desktop</div>'}
+  else html+=p.map(function(x){
+    var m=((x.prixVente||0)-(x.prixAchat||0))*(x.stock||0)
+    var pct=x.prixVente?Math.round(((x.prixVente-x.prixAchat)/x.prixVente)*100):0
+    var c=pct>=40?'var(--ok)':pct>=20?'var(--warn)':'var(--err)'
     return '<div class="row"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+x.nom+'</div><div style="font-size:11px;color:var(--m)">'+x.cat+' - '+x.stock+' '+(x.unit||'')+'</div></div><div style="text-align:right"><div style="font-weight:700;color:'+c+'">'+fe(m)+'</div><div style="font-size:11px;color:'+c+'">'+pct+'%</div></div></div>'
   }).join('')
-  html += '</div>'
+  html+='</div>'
   set(html)
 }
 
-// ── HISTORIQUE ──
-function rHist(search) {
-  var d = D(), h = (d.history||[]).slice().reverse()
-  if (search) h = h.filter(function(x){return (x.produit||x.nom||'').toLowerCase().includes(search.toLowerCase())})
-  var html = '<div style="display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:8px 12px;margin-bottom:12px"><span style="color:var(--m);font-size:14px">&#128269;</span><input type="text" placeholder="Rechercher..." oninput="rHist(this.value)" style="flex:1;background:transparent;border:none;color:var(--t);font-size:16px;font-family:inherit;outline:none"/></div>'
-  html += '<div class="sec">'
-  if (!h.length) { html += '<div class="empty">Aucun historique</div>' }
-  else html += h.slice(0,50).map(function(x){
-    var isV = x.type === 'vente'
-    var c = isV ? 'var(--ok)' : 'var(--warn)'
-    var val = isV ? ('+'+fe(x.total||0)) : ((x.qty>0?'+':'')+x.qty+' '+(x.unit||''))
+function rHist(search){
+  var d=D(),h=(d.history||[]).slice().reverse()
+  if(search)h=h.filter(function(x){return(x.produit||x.nom||'').toLowerCase().includes(search.toLowerCase())})
+  var html='<div style="display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:8px 12px;margin-bottom:12px">'
+  +'<span style="color:var(--m);font-size:14px">&#128269;</span>'
+  +'<input type="text" placeholder="Rechercher..." oninput="rHist(this.value)" style="flex:1;background:transparent;border:none;color:var(--t);font-size:16px;font-family:inherit;outline:none"/></div>'
+  html+='<div class="sec">'
+  if(!h.length){html+='<div class="empty">Aucun historique</div>'}
+  else html+=h.slice(0,50).map(function(x){
+    var isV=x.type==='vente'
+    var c=isV?'var(--ok)':'var(--warn)'
+    var val=isV?('+'+fe(x.total||0)):((x.qty>0?'+':'')+x.qty+' '+(x.unit||''))
     return '<div class="row"><div style="font-size:20px;flex-shrink:0">'+(isV?'&#128176;':'&#128230;')+'</div><div style="flex:1;min-width:0;margin-left:4px"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(x.produit||x.nom||'-')+'</div><div style="font-size:11px;color:var(--m)">'+new Date(x.date).toLocaleDateString('fr-FR')+(x.motif?' - '+x.motif:'')+'</div></div><div style="font-weight:700;color:'+c+'">'+val+'</div></div>'
   }).join('')
-  html += '</div>'
+  html+='</div>'
   set(html)
 }
 
-// ── STATS ──
-function rStats() {
-  var d = D(), h = (d.history||[]).filter(function(x){return x.type==='vente'})
-  var today = new Date().toDateString(), m = new Date().getMonth(), y = new Date().getFullYear()
-  var caJ = h.filter(function(x){return new Date(x.date).toDateString()===today}).reduce(function(s,x){return s+(x.total||0)},0)
-  var caM = h.filter(function(x){return new Date(x.date).getMonth()===m&&new Date(x.date).getFullYear()===y}).reduce(function(s,x){return s+(x.total||0)},0)
-  var caT = h.reduce(function(s,x){return s+(x.total||0)},0)
-  var acv = ac()
-  var html = '<div class="kpi-g"><div class="kpi"><div class="kpi-l">CA du jour</div><div class="kpi-v" style="color:var(--ok)">'+fe(caJ)+'</div></div><div class="kpi"><div class="kpi-l">CA Ce mois</div><div class="kpi-v" style="color:'+acv+'">'+fe(caM)+'</div></div><div class="kpi"><div class="kpi-l">CA Total</div><div class="kpi-v" style="color:'+acv+'">'+fe(caT)+'</div></div><div class="kpi"><div class="kpi-l">Nb ventes</div><div class="kpi-v">'+h.length+'</div></div></div>'
-  var totals = {}
+function rStats(){
+  var d=D(),h=(d.history||[]).filter(function(x){return x.type==='vente'})
+  var today=new Date().toDateString(),m=new Date().getMonth(),y=new Date().getFullYear()
+  var caJ=h.filter(function(x){return new Date(x.date).toDateString()===today}).reduce(function(s,x){return s+(x.total||0)},0)
+  var caM=h.filter(function(x){return new Date(x.date).getMonth()===m&&new Date(x.date).getFullYear()===y}).reduce(function(s,x){return s+(x.total||0)},0)
+  var caT=h.reduce(function(s,x){return s+(x.total||0)},0)
+  var acv=ac()
+  var html='<div class="kpi-g">'
+  +'<div class="kpi"><div class="kpi-l">CA du jour</div><div class="kpi-v" style="color:var(--ok)">'+fe(caJ)+'</div></div>'
+  +'<div class="kpi"><div class="kpi-l">CA Ce mois</div><div class="kpi-v" style="color:'+acv+'">'+fe(caM)+'</div></div>'
+  +'<div class="kpi"><div class="kpi-l">CA Total</div><div class="kpi-v" style="color:'+acv+'">'+fe(caT)+'</div></div>'
+  +'<div class="kpi"><div class="kpi-l">Nb ventes</div><div class="kpi-v">'+h.length+'</div></div>'
+  +'</div>'
+  var totals={}
   h.forEach(function(x){totals[x.produit||x.nom||'?']=(totals[x.produit||x.nom||'?']||0)+(x.total||0)})
-  var sorted = Object.entries(totals).sort(function(a,b){return b[1]-a[1]}).slice(0,8)
-  html += '<div class="sec"><div class="sec-h"><span class="sec-t">Top ventes</span></div>'
-  if (!sorted.length) { html += '<div class="empty">Aucune vente</div>' }
-  else { var mx = sorted[0][1]; html += sorted.map(function(e){ var p=Math.round((e[1]/mx)*100); return '<div style="padding:10px 14px;border-bottom:1px solid var(--b2)"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;font-weight:600">'+e[0]+'</span><span style="font-size:12px;font-weight:700;color:'+acv+'">'+fe(e[1])+'</span></div><div class="bar-bg"><div class="bar-fill" style="width:'+p+'%;background:'+acv+'"></div></div></div>' }).join('') }
-  html += '</div>'
+  var sorted=Object.entries(totals).sort(function(a,b){return b[1]-a[1]}).slice(0,8)
+  html+='<div class="sec"><div class="sec-h"><span class="sec-t">Top ventes</span></div>'
+  if(!sorted.length){html+='<div class="empty">Aucune vente</div>'}
+  else{var mx=sorted[0][1];html+=sorted.map(function(e){
+    var p=Math.round((e[1]/mx)*100)
+    return '<div style="padding:10px 14px;border-bottom:1px solid var(--b2)"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;font-weight:600">'+e[0]+'</span><span style="font-size:12px;font-weight:700;color:'+acv+'">'+fe(e[1])+'</span></div><div class="bar-bg"><div class="bar-fill" style="width:'+p+'%;background:'+acv+'"></div></div></div>'
+  }).join('')}
+  html+='</div>'
   set(html)
 }
 
-// ── EMPLOYES ──
-function rEmps() {
-  var emps = getEmps(W), total = emps.reduce(function(s,e){return s+(parseFloat(e.brut)||0)},0)
-  var acv = ac()
-  var html = '<div class="kpi-g"><div class="kpi" style="grid-column:1/-1"><div class="kpi-l">Masse salariale / mois</div><div class="kpi-v" style="color:'+acv+'">'+fe(total)+'</div></div></div>'
-  var cols = ['#00d4ff','#a855f7','#22c55e','#f97316','#ec4899']
-  html += '<div class="sec">'
-  if (!emps.length) { html += '<div class="empty">Gerez les employes sur desktop</div>' }
-  else html += emps.map(function(e,i){ var ini=(e.nom||'?').slice(0,2).toUpperCase(); return '<div class="row"><div style="width:38px;height:38px;border-radius:10px;background:'+cols[i%cols.length]+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#000;flex-shrink:0">'+ini+'</div><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:600">'+(e.nom||'-')+'</div><div style="font-size:11px;color:var(--m)">'+(e.poste||'')+(e.heures?' - '+e.heures+'h/mois':'')+'</div></div><div style="font-weight:700;color:'+acv+'">'+fe(parseFloat(e.brut)||0)+'</div></div>' }).join('')
-  html += '</div>'
+function rEmps(){
+  var emps=getEmps(W),total=emps.reduce(function(s,e){return s+(parseFloat(e.brut)||0)},0)
+  var acv=ac()
+  var html='<div class="kpi-g"><div class="kpi" style="grid-column:1/-1"><div class="kpi-l">Masse salariale / mois</div><div class="kpi-v" style="color:'+acv+'">'+fe(total)+'</div></div></div>'
+  var cols=['#00d4ff','#a855f7','#22c55e','#f97316','#ec4899']
+  html+='<div class="sec">'
+  if(!emps.length){html+='<div class="empty">Gerez les employes sur desktop</div>'}
+  else html+=emps.map(function(e,i){
+    var ini=(e.nom||'?').slice(0,2).toUpperCase()
+    return '<div class="row"><div style="width:38px;height:38px;border-radius:10px;background:'+cols[i%cols.length]+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#000;flex-shrink:0">'+ini+'</div><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:600">'+(e.nom||'-')+'</div><div style="font-size:11px;color:var(--m)">'+(e.poste||'')+(e.heures?' - '+e.heures+'h/mois':'')+'</div></div><div style="font-weight:700;color:'+acv+'">'+fe(parseFloat(e.brut)||0)+'</div></div>'
+  }).join('')
+  html+='</div>'
   set(html)
 }
 
-// ── KM ──
-function rKm() {
-  var hist = getKM(), total = hist.reduce(function(s,t){return s+(parseFloat(t.dist)||0)},0), ind = total*0.602
-  var html = '<div class="kpi-g"><div class="kpi"><div class="kpi-l">Total km</div><div class="kpi-v" style="color:var(--cm)">'+Math.round(total)+' km</div></div><div class="kpi"><div class="kpi-l">Indemnites</div><div class="kpi-v" style="color:var(--ok)">'+fe2(ind)+'</div></div></div>'
-  html += '<div class="sec"><div class="sec-h"><span class="sec-t">Historique</span><button class="btn btn-cm" style="padding:4px 10px;font-size:11px" onclick="openKm()">+ Trajet</button></div>'
-  if (!hist.length) { html += '<div class="empty">Aucun trajet</div>' }
-  else html += hist.slice().reverse().slice(0,20).map(function(t){ return '<div class="row"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+(t.depart||'-')+' - '+(t.arrivee||'-')+'</div><div style="font-size:11px;color:var(--m)">'+new Date(t.date).toLocaleDateString('fr-FR')+(t.motif?' - '+t.motif:'')+'</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--cm)">'+(t.dist||0)+' km</div><div style="font-size:11px;color:var(--m)">'+fe2((t.dist||0)*0.602)+'</div></div></div>' }).join('')
-  html += '</div>'
+function rKm(){
+  var hist=getKM(),total=hist.reduce(function(s,t){return s+(parseFloat(t.dist)||0)},0),ind=total*0.602
+  var html='<div class="kpi-g">'
+  +'<div class="kpi"><div class="kpi-l">Total km</div><div class="kpi-v" style="color:var(--cm)">'+Math.round(total)+' km</div></div>'
+  +'<div class="kpi"><div class="kpi-l">Indemnites</div><div class="kpi-v" style="color:var(--ok)">'+fe2(ind)+'</div></div>'
+  +'</div>'
+  html+='<div class="sec"><div class="sec-h"><span class="sec-t">Historique</span><button class="btn btn-cm" style="padding:4px 10px;font-size:11px" onclick="openKm()">+ Trajet</button></div>'
+  if(!hist.length){html+='<div class="empty">Aucun trajet</div>'}
+  else html+=hist.slice().reverse().slice(0,20).map(function(t){
+    return '<div class="row"><div style="flex:1"><div style="font-size:13px;font-weight:600">'+(t.depart||'-')+' - '+(t.arrivee||'-')+'</div><div style="font-size:11px;color:var(--m)">'+new Date(t.date).toLocaleDateString('fr-FR')+(t.motif?' - '+t.motif:'')+'</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--cm)">'+(t.dist||0)+' km</div><div style="font-size:11px;color:var(--m)">'+fe2((t.dist||0)*0.602)+'</div></div></div>'
+  }).join('')
+  html+='</div>'
   set(html)
 }
 
-// ── ACTIONS PRODUIT ──
-function openP(cat, id) {
-  var d = D(), p = id ? (d.products||[]).find(function(x){return x.id==id}) : null
-  document.getElementById('p-w').value = W
-  document.getElementById('p-cat').value = cat
-  document.getElementById('p-id').value = id || ''
-  document.getElementById('sh-p-t').textContent = p ? 'Modifier' : 'Nouveau produit'
-  document.getElementById('p-nom').value = p ? p.nom : ''
-  document.getElementById('p-stk').value = p ? p.stock : ''
-  document.getElementById('p-unit').value = p ? (p.unit||'') : ''
-  document.getElementById('p-warn').value = p ? p.warn : ''
-  document.getElementById('p-dng').value = p ? p.danger : ''
-  document.getElementById('p-pa').value = p ? (p.prixAchat||'') : ''
-  document.getElementById('p-pv').value = p ? (p.prixVente||'') : ''
-  document.getElementById('p-save-btn').className = 'btn ' + bc() + ' btn-w'
-  document.getElementById('p-del-btn').style.display = p ? 'block' : 'none'
+function openP(cat,id){
+  var d=D(),p=id?(d.products||[]).find(function(x){return x.id==id}):null
+  document.getElementById('p-w').value=W
+  document.getElementById('p-cat').value=cat
+  document.getElementById('p-id').value=id||''
+  document.getElementById('sh-p-t').textContent=p?'Modifier':'Nouveau produit'
+  document.getElementById('p-nom').value=p?p.nom:''
+  document.getElementById('p-stk').value=p?p.stock:''
+  document.getElementById('p-unit').value=p?(p.unit||''):''
+  document.getElementById('p-warn').value=p?p.warn:''
+  document.getElementById('p-dng').value=p?p.danger:''
+  document.getElementById('p-pa').value=p?(p.prixAchat||''):''
+  document.getElementById('p-pv').value=p?(p.prixVente||''):''
+  document.getElementById('p-save-btn').className='btn '+bc()+' btn-w'
+  document.getElementById('p-del-btn').style.display=p?'block':'none'
   opn('sh-p')
 }
 
-async function saveProd() {
-  var w = document.getElementById('p-w').value
-  var cat = document.getElementById('p-cat').value
-  var id = document.getElementById('p-id').value
-  var nom = document.getElementById('p-nom').value.trim()
-  if (!nom) { toast2('Nom obligatoire', 'err'); return }
-  var d = w === 'sf' ? SF : CM
-  if (id) {
-    var p = d.products.find(function(x){return x.id==id})
-    if (p) { p.nom=nom; p.stock=+document.getElementById('p-stk').value||0; p.unit=document.getElementById('p-unit').value; p.warn=+document.getElementById('p-warn').value||5; p.danger=+document.getElementById('p-dng').value||2; p.prixAchat=+document.getElementById('p-pa').value||0; p.prixVente=+document.getElementById('p-pv').value||0 }
-  } else {
-    var nid = Math.max.apply(null,(d.products||[]).map(function(p){return p.id||0}).concat([0]))+1
-    d.products.push({id:nid,cat:cat,nom:nom,stock:+document.getElementById('p-stk').value||0,unit:document.getElementById('p-unit').value,warn:+document.getElementById('p-warn').value||5,danger:+document.getElementById('p-dng').value||2,max:20,prixAchat:+document.getElementById('p-pa').value||0,prixVente:+document.getElementById('p-pv').value||0})
-  }
-  await saveWorld(w)
-  cls('sh-p'); rCat(cat); toast2('Produit enregistre !')
+function saveProd(){
+  var w=document.getElementById('p-w').value,cat=document.getElementById('p-cat').value
+  var id=document.getElementById('p-id').value,nom=document.getElementById('p-nom').value.trim()
+  if(!nom){toast2('Nom obligatoire','err');return}
+  var d=w==='sf'?getSF():getCM()
+  if(id){var p=d.products.find(function(x){return x.id==id});if(p){p.nom=nom;p.stock=+document.getElementById('p-stk').value||0;p.unit=document.getElementById('p-unit').value;p.warn=+document.getElementById('p-warn').value||5;p.danger=+document.getElementById('p-dng').value||2;p.prixAchat=+document.getElementById('p-pa').value||0;p.prixVente=+document.getElementById('p-pv').value||0}}
+  else{var nid=Math.max.apply(null,(d.products||[]).map(function(p){return p.id||0}).concat([0]))+1;d.products.push({id:nid,cat:cat,nom:nom,stock:+document.getElementById('p-stk').value||0,unit:document.getElementById('p-unit').value,warn:+document.getElementById('p-warn').value||5,danger:+document.getElementById('p-dng').value||2,max:20,prixAchat:+document.getElementById('p-pa').value||0,prixVente:+document.getElementById('p-pv').value||0})}
+  w==='sf'?saveSF(d):saveCM(d)
+  cls('sh-p');rCat(cat);toast2('Produit enregistre !')
 }
 
-async function delProd() {
-  var w = document.getElementById('p-w').value
-  var cat = document.getElementById('p-cat').value
-  var id = document.getElementById('p-id').value
-  var d = w === 'sf' ? SF : CM
-  d.products = d.products.filter(function(x){return x.id!=id})
-  await saveWorld(w)
-  cls('sh-p'); rCat(cat); toast2('Produit supprime')
+function delProd(){
+  var w=document.getElementById('p-w').value,cat=document.getElementById('p-cat').value,id=document.getElementById('p-id').value
+  var d=w==='sf'?getSF():getCM()
+  d.products=d.products.filter(function(x){return x.id!=id})
+  w==='sf'?saveSF(d):saveCM(d)
+  cls('sh-p');rCat(cat);toast2('Produit supprime')
 }
 
-function openV(id) {
-  var d = D(), p = (d.products||[]).find(function(x){return x.id==id}); if (!p) return
-  document.getElementById('v-w').value = W
-  document.getElementById('v-id').value = id
-  document.getElementById('v-nom').textContent = p.nom
-  document.getElementById('v-qty').value = '1'
-  document.getElementById('v-px').value = p.prixVente || ''
-  document.getElementById('v-btn').className = 'btn ' + bc() + ' btn-w'
+function openV(id){
+  var d=D(),p=(d.products||[]).find(function(x){return x.id==id});if(!p)return
+  document.getElementById('v-w').value=W;document.getElementById('v-id').value=id
+  document.getElementById('v-nom').textContent=p.nom
+  document.getElementById('v-qty').value='1';document.getElementById('v-px').value=p.prixVente||''
+  document.getElementById('v-btn').className='btn '+bc()+' btn-w'
   opn('sh-v')
 }
 
-async function saveVente() {
-  var w = document.getElementById('v-w').value
-  var id = document.getElementById('v-id').value
-  var qty = +document.getElementById('v-qty').value||1
-  var px = +document.getElementById('v-px').value||0
-  var d = w === 'sf' ? SF : CM
-  var p = d.products.find(function(x){return x.id==id}); if (!p) return
-  if (p.stock < qty) { toast2('Stock insuffisant', 'err'); return }
-  p.stock -= qty
+function saveVente(){
+  var w=document.getElementById('v-w').value,id=document.getElementById('v-id').value
+  var qty=+document.getElementById('v-qty').value||1,px=+document.getElementById('v-px').value||0
+  var d=w==='sf'?getSF():getCM(),p=d.products.find(function(x){return x.id==id});if(!p)return
+  if(p.stock<qty){toast2('Stock insuffisant','err');return}
+  p.stock-=qty
   d.history.push({type:'vente',date:new Date().toISOString(),produit:p.nom,cat:p.cat,qty:qty,unit:p.unit,total:qty*px})
-  await saveWorld(w)
+  w==='sf'?saveSF(d):saveCM(d)
   cls('sh-v')
-  if (TAB==='dashboard') rDash(); else rCat(p.cat)
+  if(TAB==='dashboard')rDash();else rCat(p.cat)
   toast2('Vente enregistree !')
 }
 
-function openS(id) {
-  var d = D(), p = (d.products||[]).find(function(x){return x.id==id}); if (!p) return
-  document.getElementById('s-w').value = W
-  document.getElementById('s-id').value = id
-  document.getElementById('s-nom').textContent = p.nom
-  document.getElementById('s-stk').value = p.stock
-  document.getElementById('s-btn').className = 'btn ' + bc() + ' btn-w'
+function openS(id){
+  var d=D(),p=(d.products||[]).find(function(x){return x.id==id});if(!p)return
+  document.getElementById('s-w').value=W;document.getElementById('s-id').value=id
+  document.getElementById('s-nom').textContent=p.nom;document.getElementById('s-stk').value=p.stock
+  document.getElementById('s-btn').className='btn '+bc()+' btn-w'
   opn('sh-s')
 }
 
-async function saveAdj() {
-  var w = document.getElementById('s-w').value
-  var id = document.getElementById('s-id').value
-  var ns = +document.getElementById('s-stk').value||0
-  var mot = document.getElementById('s-mot').value
-  var d = w === 'sf' ? SF : CM
-  var p = d.products.find(function(x){return x.id==id}); if (!p) return
-  var diff = ns - p.stock; p.stock = ns
+function saveAdj(){
+  var w=document.getElementById('s-w').value,id=document.getElementById('s-id').value
+  var ns=+document.getElementById('s-stk').value||0,mot=document.getElementById('s-mot').value
+  var d=w==='sf'?getSF():getCM(),p=d.products.find(function(x){return x.id==id});if(!p)return
+  var diff=ns-p.stock;p.stock=ns
   d.history.push({type:'ajustement',date:new Date().toISOString(),produit:p.nom,cat:p.cat,qty:diff,unit:p.unit,motif:mot})
-  await saveWorld(w)
+  w==='sf'?saveSF(d):saveCM(d)
   cls('sh-s')
-  if (['boissons','alimentaire','consommables'].includes(TAB)) rCat(TAB)
+  if(['boissons','alimentaire','consommables'].includes(TAB))rCat(TAB)
   toast2('Stock mis a jour !')
 }
 
-function openKm() {
-  document.getElementById('km-d').value = ''
-  document.getElementById('km-a').value = ''
-  document.getElementById('km-km').value = ''
-  document.getElementById('km-dt').value = new Date().toISOString().slice(0,10)
-  document.getElementById('km-m').value = ''
-  opn('sh-km')
+function openKm(){
+  document.getElementById('km-d').value='';document.getElementById('km-a').value=''
+  document.getElementById('km-km').value='';document.getElementById('km-dt').value=new Date().toISOString().slice(0,10)
+  document.getElementById('km-m').value='';opn('sh-km')
 }
 
-async function saveKm() {
-  var dep = document.getElementById('km-d').value.trim()
-  var arr = document.getElementById('km-a').value.trim()
-  var dist = +document.getElementById('km-km').value||0
-  if (!dep||!arr||!dist) { toast2('Champs obligatoires', 'err'); return }
-  KM_DATA.push({depart:dep, arrivee:arr, dist:dist, date:document.getElementById('km-dt').value, motif:document.getElementById('km-m').value})
-  await saveKmData()
-  cls('sh-km'); rKm(); toast2('Trajet enregistre !')
+function saveKm(){
+  var dep=document.getElementById('km-d').value.trim(),arr=document.getElementById('km-a').value.trim()
+  var dist=+document.getElementById('km-km').value||0
+  if(!dep||!arr||!dist){toast2('Champs obligatoires','err');return}
+  var h=getKM()
+  h.push({depart:dep,arrivee:arr,dist:dist,date:document.getElementById('km-dt').value,motif:document.getElementById('km-m').value})
+  sv('cm_km',h);cls('sh-km');rKm();toast2('Trajet enregistre !')
 }
 
-// ── SHEETS ──
-function opn(id) { document.getElementById(id).classList.add('on'); document.getElementById('ov').style.display='block'; document.body.style.overflow='hidden' }
-function cls(id) { document.getElementById(id).classList.remove('on'); document.getElementById('ov').style.display='none'; document.body.style.overflow='' }
-function closeAll() { document.querySelectorAll('.sh').forEach(function(s){s.classList.remove('on')}); document.getElementById('ov').style.display='none'; document.body.style.overflow='' }
+function opn(id){document.getElementById(id).classList.add('on');document.getElementById('ov').style.display='block';document.body.style.overflow='hidden'}
+function cls(id){document.getElementById(id).classList.remove('on');document.getElementById('ov').style.display='none';document.body.style.overflow=''}
+function closeAll(){document.querySelectorAll('.sh').forEach(function(s){s.classList.remove('on')});document.getElementById('ov').style.display='none';document.body.style.overflow=''}
 
-// ── TOAST ──
-function toast2(msg, type) {
-  var el = document.getElementById('toast')
-  el.textContent = msg; el.className = 'toast '+(type==='err'?'t-err':'t-ok'); el.style.display='block'
-  setTimeout(function(){el.style.display='none'}, 2800)
+function toast2(msg,type){
+  var el=document.getElementById('toast')
+  el.textContent=msg;el.className='toast '+(type==='err'?'t-err':'t-ok');el.style.display='block'
+  setTimeout(function(){el.style.display='none'},2800)
 }
 
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', function() {
-  sw('sf')
-  loadAll()
-})
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw-food.js').catch(function(){})
-  })
-}
+document.addEventListener('DOMContentLoaded',function(){sw('sf')})
+if('serviceWorker'in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw-food.js').catch(function(){})})
 </script>
 </body>
 </html>
